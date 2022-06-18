@@ -8,16 +8,11 @@ import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import com.imtmobileapps.components.EmptyScreen
-import com.imtmobileapps.model.Coin
 import com.imtmobileapps.ui.theme.ArchitectureComposeTheme
 import com.imtmobileapps.util.Routes
-import com.imtmobileapps.util.getDummyCoin
 import com.imtmobileapps.view.holding.HoldingDetailScreen
 import com.imtmobileapps.view.holding.HoldingListScreen
 import com.imtmobileapps.view.holding.HoldingViewModel

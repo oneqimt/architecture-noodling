@@ -14,10 +14,7 @@ import com.imtmobileapps.ui.theme.topAppBarBackgroundColor
 import com.imtmobileapps.ui.theme.topAppBarContentColor
 import com.imtmobileapps.util.*
 import com.imtmobileapps.util.Constants.LOGIN_SCREEN_TAG
-import com.imtmobileapps.util.Constants.PORTFOLIO_LIST_TAG
 import com.imtmobileapps.view.portfoliolist.PortfolioListViewModel
-import kotlinx.coroutines.launch
-import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 import java.io.FileNotFoundException
@@ -46,7 +43,6 @@ fun LoginScreen(
     val scaffoldState =
         rememberScaffoldState() // This is here in case we want to display a snackbar
 
-    val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
     val credentials = remember {

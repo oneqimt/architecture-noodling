@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -16,9 +15,7 @@ import com.imtmobileapps.ui.theme.topAppBarBackgroundColor
 import com.imtmobileapps.ui.theme.topAppBarContentColor
 import com.imtmobileapps.util.CoinSort
 import com.imtmobileapps.util.Constants.PORTFOLIO_LIST_APP_BAR_TAG
-import com.imtmobileapps.util.deleteSensitiveFile
 import com.imtmobileapps.util.getDummyPerson
-import kotlinx.coroutines.launch
 import logcat.logcat
 
 @Composable
@@ -30,8 +27,7 @@ fun PortfolioListAppBar(
     onSettingsClicked: () -> Unit,
     person: Person,
 ) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
+
 
     DefaultListAppBar(
         onSortClicked = {

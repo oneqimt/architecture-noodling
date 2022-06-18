@@ -1,6 +1,5 @@
 package com.imtmobileapps.view.portfoliolist
 
-import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Arrangement
