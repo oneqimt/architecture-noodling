@@ -30,4 +30,6 @@ object Constants {
     const val HOLDING_DETAIL_TAG = "HoldingDetailScreen"
     const val HOLDING_DETAIL_CARD_TAG = "AddHoldingDetailCard"
     const val FILTERED_COINS_VIEW_TAG = "FilteredCoinsView"
+    const val PORTFOLIO_DETAIL_TAG = "PortfolioDetail"
+    const val EDIT_COIN_TAG = "EditCoin"
 }

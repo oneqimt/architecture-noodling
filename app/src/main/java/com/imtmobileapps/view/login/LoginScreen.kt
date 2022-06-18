@@ -135,9 +135,8 @@ fun LoginScreen(
                     passwordText.value = password
                 },
                 onDone = {
-                    // viewModel.login(usernameText.value, passwordText.value)
                     logcat(LOGIN_SCREEN_TAG) { "onDone" }
-
+                    viewModel.login(usernameText.value, passwordText.value)
                 },
                 onSignInClicked = {
                     logcat(LOGIN_SCREEN_TAG) { "onSignInClicked" }

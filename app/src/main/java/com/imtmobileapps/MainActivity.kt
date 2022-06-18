@@ -21,6 +21,7 @@ import com.imtmobileapps.view.portfoliodetail.PortfolioDetail
 import com.imtmobileapps.view.portfoliolist.PortfolioList
 import com.imtmobileapps.view.portfoliolist.PortfolioListViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import logcat.logcat
 
 
 @AndroidEntryPoint
@@ -144,7 +145,11 @@ class MainActivity : ComponentActivity() {
                             PortfolioDetail(onPopBackStack = {
                                 navController.popBackStack()
                             },
-                                viewModel = viewModel)
+                                viewModel = viewModel,
+                                onEditClicked = {
+                                    logcat(TAG){"Time to launch EditScreen!!"}
+                                }
+                            )
                         }
                         // HOLDING LIST
                         composable(

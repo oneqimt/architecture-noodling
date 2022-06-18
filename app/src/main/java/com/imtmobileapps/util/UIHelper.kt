@@ -38,6 +38,11 @@ enum class RowType {
 
 }
 
+enum class SheetType{
+    CRYPTO_VALUE,
+    COIN
+}
+
 enum class SearchAppBarState {
     OPENED,
     CLOSED

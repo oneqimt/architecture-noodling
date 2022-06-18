@@ -12,35 +12,48 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.imtmobileapps.components.EditCoin
 import com.imtmobileapps.model.CryptoValue
 import com.imtmobileapps.model.TotalValues
 import com.imtmobileapps.ui.theme.*
 import com.imtmobileapps.util.RequestState
 import com.imtmobileapps.util.RowType
+import com.imtmobileapps.util.SheetType
+import com.imtmobileapps.util.removeWhiteSpace
 import com.imtmobileapps.view.portfoliolist.PortfolioListViewModel
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PortfolioDetail(
     onPopBackStack: () -> Unit,
-    viewModel: PortfolioListViewModel
+    onEditClicked: () -> Unit,
+    viewModel: PortfolioListViewModel,
 
-){
+    ) {
     BackHandler {
         onPopBackStack()
     }
     // remember calculates the value passed to it only during the first composition. It then
     // returns the same value for every subsequent composition.
+    val sheetState = rememberBottomSheetState(
+        initialValue = BottomSheetValue.Collapsed
+    )
     val scrollState = rememberScrollState()
-    val scaffoldState =
-        rememberScaffoldState() // This is here in case we want to display a snackbar
+    val scaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = sheetState
+    )
+    val scope = rememberCoroutineScope()
+    // val scaffoldState = rememberScaffoldState()
 
     val selectedCryptoValue: State<CryptoValue?> = viewModel.selectedCryptoValue.collectAsState()
     // pull the TotalValues object out of the RequestState wrapper
@@ -51,13 +64,20 @@ fun PortfolioDetail(
     val success = totalValuesFromModel.value as RequestState.Success<*>
     val totalValues = success.data as TotalValues?
 
-    Scaffold(
-        scaffoldState = scaffoldState,
+    val quantityValueText = rememberSaveable {
+        mutableStateOf("")
+    }
 
+    val costValueText = rememberSaveable {
+        mutableStateOf("")
+    }
+
+    BottomSheetScaffold(
+        scaffoldState = scaffoldState,
         topBar = {
             TopAppBar(
                 navigationIcon = {
-                    IconButton(onClick = {onPopBackStack()}) {
+                    IconButton(onClick = { onPopBackStack() }) {
                         Icon(Icons.Filled.ArrowBack, "backIcon")
                     }
                 },
@@ -69,6 +89,21 @@ fun PortfolioDetail(
                         )
                     }
                 },
+
+                actions = {
+                    DetailActions(
+                        onEditClicked = {
+                            scope.launch {
+                                if (sheetState.isCollapsed) {
+                                    sheetState.expand()
+                                } else {
+                                    sheetState.collapse()
+                                }
+                            }
+                        }
+                    )
+                },
+
                 backgroundColor = MaterialTheme.colors.topAppBarBackgroundColor
             )
         },
@@ -229,9 +264,50 @@ fun PortfolioDetail(
                 } // item 3 end
 
             }// main column end
-        }// content end
+        },// content end
+        sheetBackgroundColor = MaterialTheme.colors.background,
+        sheetContent = {
+            EditCoin(
+                coin = selectedCryptoValue.value?.coin,
+                cryptoValue = selectedCryptoValue.value,
+                sheetType = SheetType.CRYPTO_VALUE,
+                onQuantityChanged = { q ->
+                    quantityValueText.value = removeWhiteSpace(q)
+                },
+                costValueText = costValueText.value,
+                quantityValueText = quantityValueText.value
+            )
+        },
+        sheetPeekHeight = 0.dp,
+        sheetElevation = 6.dp,
+        sheetShape = RoundedCornerShape(8.dp)
     ) // scaffold end
 
+}
 
+@Composable
+fun DetailActions(
+    onEditClicked: () -> Unit,
+) {
+    EditAction {
+        onEditClicked()
+    }
+
+}
+
+@Composable
+fun EditAction(
+    onEditClicked: () -> Unit,
+) {
+
+    IconButton(onClick = {
+        onEditClicked()
+    }) {
+        Icon(
+            Icons.Filled.Edit,
+            contentDescription = "Edit",
+            tint = MaterialTheme.colors.topAppBarContentColor
+        )
+    }
 
 }
