@@ -23,28 +23,8 @@ import logcat.logcat
 
 @Composable
 fun EmptyScreen(
-    navController: NavController,
-    viewModel: PortfolioListViewModel,
+
 ) {
-
-    val isLoggedOut = viewModel.isLoggedOut.collectAsState()
-
-    LaunchedEffect(key1 = isLoggedOut.value) {
-        logcat(EMPTY_SCREEN_TAG) { "IN Launched Effect and isLoggedOut is ${isLoggedOut.value}" }
-        when (isLoggedOut.value) {
-            true -> {
-                navController.navigate(Routes.LOGIN_SCREEN, builder = {
-                    this.popUpTo(Routes.LOGIN_SCREEN) {
-                        inclusive = true
-                    }
-                })
-            }
-            false -> {
-                navController.navigate(Routes.LOGIN_SCREEN)
-            }
-        }
-    }
-
     Card(
         Modifier.fillMaxWidth(),
         backgroundColor = MaterialTheme.colors.cardBackgroundColor

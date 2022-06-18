@@ -27,8 +27,9 @@ fun PortfolioListAppBar(
     onSaveSortState: (CoinSort) -> Unit,
     onGetSortState: () -> Unit,
     onAddClicked: () -> Unit,
-    person : Person
-){
+    onSettingsClicked: () -> Unit,
+    person: Person,
+) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
@@ -39,22 +40,11 @@ fun PortfolioListAppBar(
         },
         onLogoutClicked = {
             logcat(PORTFOLIO_LIST_APP_BAR_TAG) { "onLogout clicked" }
-            // delete file here, because Context object is needed
-            scope.launch {
-                try {
-                    deleteSensitiveFile(context = context)
-                } catch (e: Exception) {
-                    logcat(PORTFOLIO_LIST_APP_BAR_TAG) {
-                        "Problem DELETING FILE ${e.localizedMessage as String}"
-                    }
-                }
-
-            }
-           onLogout()
-
+            onLogout()
         },
         onSettingsClicked = {
             logcat(PORTFOLIO_LIST_APP_BAR_TAG) { "onSettings clicked" }
+            onSettingsClicked()
         },
 
         onAddClicked = {
@@ -74,7 +64,7 @@ fun DefaultListAppBar(
     onLogoutClicked: () -> Unit,
     onSettingsClicked: () -> Unit,
     onAddClicked: () -> Unit,
-    person: Person
+    person: Person,
 ) {
     val name = "${person.firstName} ${person.lastName}"
 
@@ -104,7 +94,7 @@ fun ListAppBarActions(
     onSortClicked: (CoinSort) -> Unit,
     onLogoutClicked: () -> Unit,
     onSettingsClicked: () -> Unit,
-    onAddClicked: () -> Unit
+    onAddClicked: () -> Unit,
 ) {
     AddAction(onAddClicked = onAddClicked)
     SortAction(onSortClicked = onSortClicked)
@@ -121,8 +111,8 @@ fun ListAppBarActions(
 
 @Composable
 fun AddAction(
-    onAddClicked: () -> Unit
-){
+    onAddClicked: () -> Unit,
+) {
 
     IconButton(onClick = {
         onAddClicked()
@@ -135,6 +125,7 @@ fun AddAction(
     }
 
 }
+
 @Composable
 fun SortAction(
     onSortClicked: (CoinSort) -> Unit,
@@ -245,7 +236,7 @@ private fun DefaultListAppBarPreview() {
         onAddClicked = {},
         person = getDummyPerson()
 
-        )
+    )
 
 }
 

@@ -41,8 +41,8 @@ class PortfolioListViewModel @Inject constructor(
     private val _selectedCryptoValue: MutableStateFlow<CryptoValue?> = MutableStateFlow(null)
     val selectedCryptoValue: StateFlow<CryptoValue?> = _selectedCryptoValue.asStateFlow()
 
-    private val _isLoggedOut: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val isLoggedOut: StateFlow<Boolean> = _isLoggedOut.asStateFlow()
+    private val _isLoggedIn = MutableStateFlow<RequestState<Boolean>>(RequestState.Idle)
+    val isLoggedIn: StateFlow<RequestState<Boolean>> = _isLoggedIn.asStateFlow()
 
     //SORT
     private val _sortState =
@@ -52,13 +52,16 @@ class PortfolioListViewModel @Inject constructor(
     // SEARCH
     private val _searchedCoins =
         MutableStateFlow<RequestState<List<CryptoValue>>>(RequestState.Idle)
-    private val searchedCoins: StateFlow<RequestState<List<CryptoValue>>> = _searchedCoins.asStateFlow()
+    private val searchedCoins: StateFlow<RequestState<List<CryptoValue>>> =
+        _searchedCoins.asStateFlow()
 
     fun setSelectedCryptoValue(cryptoValue: CryptoValue) {
         _selectedCryptoValue.value = cryptoValue
     }
 
     fun login(uname: String, pass: String) {
+        // set here to catch any errors if exception thrown
+        _isLoggedIn.value = RequestState.Loading
 
         val job = viewModelScope.launch {
             try {
@@ -74,19 +77,23 @@ class PortfolioListViewModel @Inject constructor(
                         val result: Long = repository.savePerson(person)
                         person.personuuid = result.toInt()
                         logcat(TAG) { "_person is : ${_person.value}" }
-                        _isLoggedOut.value = false
+                        _isLoggedIn.value = RequestState.Success(true)
+                        logcat(TAG) { "isLoggedIn is : ${isLoggedIn.value}" }
 
                         fetchUserDataFromRemote()
 
                     }
                 }
             } catch (e: Exception) {
-                println("ERROR LOGIN is : ${e.localizedMessage}")
+                logcat(TAG) { "LOGIN Error ${e.localizedMessage}" }
+                // There was an error, set to false
+                _isLoggedIn.value = RequestState.Error(e)
             }
         }
     }
 
     fun logout() {
+        _isLoggedIn.value = RequestState.Loading
         viewModelScope.launch {
             try {
                 val loggedOut = repository.logout()
@@ -99,8 +106,9 @@ class PortfolioListViewModel @Inject constructor(
                 _searchedCoins.value = RequestState.Success(mutableListOf())
                 clearDatabase()
                 clearPersonId() // datastore
-                // NOTE: The sensitive file is deleted in PersonCoinsListAppBar
-                _isLoggedOut.value = true
+                // NOTE: The sensitive file is deleted in PortfolioList
+                _isLoggedIn.value = RequestState.LoggedOut
+                logcat(TAG) { "isLoggedIn is : ${isLoggedIn.value}" }
 
             } catch (e: Exception) {
                 logcat(TAG, LogPriority.ERROR) { e.localizedMessage as String }
@@ -148,16 +156,17 @@ class PortfolioListViewModel @Inject constructor(
 
                 val totalsToStore = (totalValues.value as RequestState.Success<*>).data
 
-                logcat(TAG) {"TotalValues that are stored in DB $totalsToStore"}
+                logcat(TAG) { "TotalValues that are stored in DB $totalsToStore" }
                 storeTotalValuesInDatabase(totalsToStore as TotalValues)
 
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 logcat(TAG) { "Error getting total values from remote ${e.localizedMessage}" }
                 _totalValues.value = RequestState.Error(e)
 
             }
         }
     }
+
     //DATABASE
     private fun clearDatabase() {
         viewModelScope.launch {
@@ -220,6 +229,7 @@ class PortfolioListViewModel @Inject constructor(
             }
         }
     }
+
     /****************** SORT ****************/
     fun saveSortState(coinSort: CoinSort) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -275,6 +285,7 @@ class PortfolioListViewModel @Inject constructor(
             }
         }
     }
+
     private fun deleteAllCoins() {
         viewModelScope.launch {
             try {

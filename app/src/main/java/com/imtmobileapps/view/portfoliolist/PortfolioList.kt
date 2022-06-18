@@ -1,10 +1,8 @@
 package com.imtmobileapps.view.portfoliolist
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,12 +10,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.*
-import androidx.compose.material.SnackbarDefaults.backgroundColor
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -26,18 +23,12 @@ import androidx.navigation.NavController
 import com.imtmobileapps.components.CircularProgressBar
 import com.imtmobileapps.components.PortfolioListAppBar
 import com.imtmobileapps.model.CryptoValue
-import com.imtmobileapps.ui.theme.fabBackgroundColor
-import com.imtmobileapps.ui.theme.fabIconBackgroundColor
-import com.imtmobileapps.util.CoinSort
+import com.imtmobileapps.util.*
 import com.imtmobileapps.util.Constants.PORTFOLIO_LIST_TAG
-import com.imtmobileapps.util.RequestState
-import com.imtmobileapps.util.Routes
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import logcat.logcat
 
 
-@SuppressLint("UnrememberedMutableState")
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
@@ -62,6 +53,7 @@ fun PortfolioList(
     val context = LocalContext.current
     var doScrollList = false
 
+
     Scaffold(
         scaffoldState = scaffoldState,
         backgroundColor = MaterialTheme.colors.background,
@@ -70,16 +62,18 @@ fun PortfolioList(
             person.value?.let {
                 PortfolioListAppBar(
                     onLogout = {
+                        scope.launch {
+                            try {
+                                deleteSensitiveFile(context = context)
+                            } catch (e: Exception) {
+                                logcat(Constants.PORTFOLIO_LIST_APP_BAR_TAG) {
+                                    "Problem DELETING FILE ${e.localizedMessage as String}"
+                                }
+                            }
+
+                        }
                         viewModel.logout()
-                        // Used as a workaround until they fix Compose Navigation.
-                        // Could not get LoginScreen off back stack properly.
-                        // https://stackoverflow.com/questions/6609414/how-do-i-programmatically-restart-an-android-app/46848226#46848226
-                        val packageManager = context.packageManager
-                        val intent = packageManager.getLaunchIntentForPackage(context.packageName)
-                        val componentName = intent!!.component
-                        val mainIntent = Intent.makeRestartActivityTask(componentName)
-                        context.startActivity(mainIntent)
-                        Runtime.getRuntime().exit(0)
+                        navController.navigate(Routes.LOGIN_SCREEN)
 
                     },
                     onSaveSortState = { coinSort ->
@@ -94,6 +88,10 @@ fun PortfolioList(
                     onAddClicked = {
                         logcat(PORTFOLIO_LIST_TAG) { "Add clicked navigate to HoldingDetailScreen" }
                         navController.navigate(Routes.HOLDING_LIST)
+                    },
+
+                    onSettingsClicked = {
+                        logcat(PORTFOLIO_LIST_TAG) { "Settings clicked" }
                     },
                     person = it
                 )

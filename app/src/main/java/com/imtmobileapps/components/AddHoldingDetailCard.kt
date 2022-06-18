@@ -233,14 +233,14 @@ fun AddHoldingDetailCard(
                     Button(onClick = {
                         logcat(HOLDING_DETAIL_TAG){"UPDATE clicked!"}
                         updateHolding()
-                    }, modifier = Modifier.padding(8.dp)) {
-                        Text(text = "Update Holding")
+                    }, modifier = Modifier.padding(4.dp)) {
+                        Text(text = "Update")
                     }
                     Button(onClick = {
                         logcat(HOLDING_DETAIL_TAG){"DELETE clicked!"}
                         deleteHolding()
-                    }, modifier = Modifier.padding(8.dp)) {
-                        Text(text = "Delete Holding")
+                    }, modifier = Modifier.padding(4.dp)) {
+                        Text(text = "Delete")
 
                     }
                 }

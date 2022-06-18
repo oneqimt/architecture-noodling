@@ -12,13 +12,12 @@ import com.imtmobileapps.components.LoginCard
 import com.imtmobileapps.model.Credentials
 import com.imtmobileapps.ui.theme.topAppBarBackgroundColor
 import com.imtmobileapps.ui.theme.topAppBarContentColor
+import com.imtmobileapps.util.*
 import com.imtmobileapps.util.Constants.LOGIN_SCREEN_TAG
-import com.imtmobileapps.util.Routes
-import com.imtmobileapps.util.deleteSensitiveFile
-import com.imtmobileapps.util.readUsernameAndPassword
-import com.imtmobileapps.util.writeUsernameAndPassword
+import com.imtmobileapps.util.Constants.PORTFOLIO_LIST_TAG
 import com.imtmobileapps.view.portfoliolist.PortfolioListViewModel
 import kotlinx.coroutines.launch
+import logcat.LogPriority
 import logcat.asLog
 import logcat.logcat
 import java.io.FileNotFoundException
@@ -30,7 +29,7 @@ fun LoginScreen(
 ) {
 
     BackHandler {
-        navController.popBackStack()
+        // blocks system back button
     }
 
     val usernameText = rememberSaveable {
@@ -54,38 +53,68 @@ fun LoginScreen(
         mutableStateOf(Credentials(username = "", password = ""))
     }
 
+    val isLoggedIn = viewModel.isLoggedIn.collectAsState()
+
+    LaunchedEffect(key1 = isLoggedIn.value, block = {
+        when (isLoggedIn.value) {
+            is RequestState.Loading -> {
+                logcat(LOGIN_SCREEN_TAG) { "RequestState.Loading is : ${isLoggedIn.value}" }
+            }
+            is RequestState.Success -> {
+                logcat(LOGIN_SCREEN_TAG) { "RequestState.Success is : ${isLoggedIn.value}" }
+                navController.navigate(Routes.PORTFOLIO_LIST)
+            }
+
+            is RequestState.LoggedOut -> {
+                logcat(LOGIN_SCREEN_TAG) { "RequestState.LoggedOut TODO - cleanup : ${isLoggedIn.value}" }
+            }
+
+            is RequestState.Error -> {
+                logcat(LOGIN_SCREEN_TAG) { "RequestState.Error is : ${isLoggedIn.value}" }
+                // show snack bar to user
+                val result = scaffoldState.snackbarHostState.showSnackbar(
+                    message = "Login failed with those credentials. Please retry.",
+                    actionLabel = "Retry",
+                    SnackbarDuration.Long
+                )
+                logcat(LOGIN_SCREEN_TAG) { "result is : ${result.name}" }
+                if (result == SnackbarResult.ActionPerformed) {
+                    logcat(LOGIN_SCREEN_TAG) { "THEY clicked retry." }
+                    // clear text fields
+                    usernameText.value = ""
+                    passwordText.value = ""
+
+                }
+            }
+            else -> {}
+        }
+
+    })
+
     // Check if the user has the credentials cached, if so, log them in
-    LaunchedEffect(key1 = credentials.value) {
+    LaunchedEffect(key1 = credentials.value, block = {
         try {
             // READ
             val auth = readUsernameAndPassword(context = context)
-            logcat(LOGIN_SCREEN_TAG) { "LaunchedEffect AUTH from SANDBOX is : ${auth}" }
             val test = auth.split(":")
             credentials.value.username = test[0]
             credentials.value.password = test[1]
             logcat(LOGIN_SCREEN_TAG) { "LaunchedEffect SPLIT is  : ${test[0]} ${test[1]}" }
-            logcat(LOGIN_SCREEN_TAG) { "LaunchedEffect Credentials object is  : ${credentials.value}" }
+
             // go ahead and log them in
             logcat(LOGIN_SCREEN_TAG) {
                 "calling viewModel.LOGIN from  LaunchedEffect : ${credentials.value.username} ${credentials.value.password}"
             }
             viewModel.login(credentials.value.username, credentials.value.password)
+            navController.navigate(Routes.PORTFOLIO_LIST)
 
-            navController.navigate(Routes.PORTFOLIO_LIST) {
-                popUpTo(Routes.LOGIN_SCREEN) { inclusive = true }
-            }
+
         } catch (e: FileNotFoundException) {
             logcat(LOGIN_SCREEN_TAG) { "FileNotFoundException ${e.localizedMessage as String}" }
         } catch (e: Exception) {
-            logcat(LOGIN_SCREEN_TAG) { "READ PROBLEM ${e.localizedMessage as String}" }
+            logcat(LOGIN_SCREEN_TAG) { "User has not requested remember me: ${e.localizedMessage as String}" }
         }
-    }
-
-    fun goToList() {
-        navController.navigate(Routes.PORTFOLIO_LIST) {
-            popUpTo(Routes.LOGIN_SCREEN) { inclusive = true }
-        }
-    }
+    })
 
     Scaffold(scaffoldState = scaffoldState,
         topBar = {
@@ -123,13 +152,10 @@ fun LoginScreen(
                             "calling viewModel.LOGIN with FILE values : ${credentials.value.username} ${credentials.value.password}"
                         }
                         viewModel.login(credentials.value.username, credentials.value.password)
-
-                        goToList()
                     } else {
                         // else get the login values from the text fields
                         logcat(LOGIN_SCREEN_TAG) { "calling viewModel.LOGIN with INPUT TEXT FIELD values ${usernameText.value} ${passwordText.value}" }
                         viewModel.login(usernameText.value, passwordText.value)
-                        goToList()
                     }
 
                 },

@@ -47,14 +47,8 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberAnimatedNavController()
                 AnimatedNavHost(
                     navController = navController,
-                    startDestination = Routes.EMPTY_SCREEN,
+                    startDestination = Routes.LOGIN_SCREEN,
                     builder = {
-
-                        composable(
-                            Routes.EMPTY_SCREEN
-                        ) {
-                            EmptyScreen(navController = navController, viewModel)
-                        }
 
                         // LOGIN
                         composable(
