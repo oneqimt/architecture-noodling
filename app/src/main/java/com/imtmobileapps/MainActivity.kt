@@ -145,10 +145,7 @@ class MainActivity : ComponentActivity() {
                             PortfolioDetail(onPopBackStack = {
                                 navController.popBackStack()
                             },
-                                viewModel = viewModel,
-                                onEditClicked = {
-                                    logcat(TAG){"Time to launch EditScreen!!"}
-                                }
+                                viewModel = viewModel
                             )
                         }
                         // HOLDING LIST

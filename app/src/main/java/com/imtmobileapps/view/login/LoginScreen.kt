@@ -8,6 +8,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.imtmobileapps.R
+import com.imtmobileapps.components.CircularProgressBar
 import com.imtmobileapps.components.LoginCard
 import com.imtmobileapps.model.Credentials
 import com.imtmobileapps.ui.theme.topAppBarBackgroundColor
@@ -55,6 +56,7 @@ fun LoginScreen(
         when (isLoggedIn.value) {
             is RequestState.Loading -> {
                 logcat(LOGIN_SCREEN_TAG) { "RequestState.Loading is : ${isLoggedIn.value}" }
+
             }
             is RequestState.Success -> {
                 logcat(LOGIN_SCREEN_TAG) { "RequestState.Success is : ${isLoggedIn.value}" }
@@ -126,6 +128,12 @@ fun LoginScreen(
         },
         content = {
             it.calculateTopPadding()
+            when(isLoggedIn.value){
+                is RequestState.Loading ->{
+                    CircularProgressBar()
+                }
+                else -> {}
+            }
             LoginCard(usernameText = usernameText.value,
                 passwordText = passwordText.value,
                 onUsernameChanged = { username ->

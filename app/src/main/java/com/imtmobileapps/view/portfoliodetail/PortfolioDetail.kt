@@ -1,6 +1,8 @@
 package com.imtmobileapps.view.portfoliodetail
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
@@ -32,11 +34,10 @@ import com.imtmobileapps.util.removeWhiteSpace
 import com.imtmobileapps.view.portfoliolist.PortfolioListViewModel
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class)
+@ExperimentalMaterialApi
 @Composable
 fun PortfolioDetail(
     onPopBackStack: () -> Unit,
-    onEditClicked: () -> Unit,
     viewModel: PortfolioListViewModel,
 
     ) {
@@ -46,14 +47,14 @@ fun PortfolioDetail(
     // remember calculates the value passed to it only during the first composition. It then
     // returns the same value for every subsequent composition.
     val sheetState = rememberBottomSheetState(
-        initialValue = BottomSheetValue.Collapsed
+        initialValue = BottomSheetValue.Collapsed,
+        animationSpec = tween(1000)
     )
     val scrollState = rememberScrollState()
     val scaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = sheetState
     )
     val scope = rememberCoroutineScope()
-    // val scaffoldState = rememberScaffoldState()
 
     val selectedCryptoValue: State<CryptoValue?> = viewModel.selectedCryptoValue.collectAsState()
     // pull the TotalValues object out of the RequestState wrapper
@@ -281,6 +282,7 @@ fun PortfolioDetail(
         sheetPeekHeight = 0.dp,
         sheetElevation = 6.dp,
         sheetShape = RoundedCornerShape(8.dp)
+
     ) // scaffold end
 
 }
