@@ -8,13 +8,8 @@ import com.imtmobileapps.model.Person
 import com.imtmobileapps.model.TotalValues
 import com.imtmobileapps.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import logcat.LogPriority
 import logcat.logcat
 import javax.inject.Inject
@@ -59,12 +54,18 @@ class PortfolioListViewModel @Inject constructor(
         _selectedCryptoValue.value = cryptoValue
     }
 
-    fun login(uname: String, pass: String) {
-        // set here to catch any errors if exception thrown
-        _isLoggedIn.value = RequestState.Loading
+    private var loginJob: Job? = null
 
-        val job = viewModelScope.launch {
+    fun login(uname: String, pass: String) {
+        if (loginJob != null){
+            return
+        }
+        loginJob = viewModelScope.launch {
             try {
+                _isLoggedIn.update {
+                    RequestState.Loading
+                }
+                delay(500L)
                 repository.login(uname, pass).collect { signUp ->
                     signUp.person.let { person ->
                         _person.value = person
@@ -77,7 +78,9 @@ class PortfolioListViewModel @Inject constructor(
                         val result: Long = repository.savePerson(person)
                         person.personuuid = result.toInt()
                         logcat(TAG) { "_person is : ${_person.value}" }
-                        _isLoggedIn.value = RequestState.Success(true)
+                        _isLoggedIn.update {
+                            RequestState.Success(true)
+                        }
                         logcat(TAG) { "isLoggedIn is : ${isLoggedIn.value}" }
 
                         fetchUserDataFromRemote()
@@ -87,7 +90,11 @@ class PortfolioListViewModel @Inject constructor(
             } catch (e: Exception) {
                 logcat(TAG) { "LOGIN Error ${e.localizedMessage}" }
                 // There was an error, set to false
-                _isLoggedIn.value = RequestState.Error(e)
+                _isLoggedIn.update {
+                    RequestState.Error(e)
+                }
+            }finally {
+                loginJob = null
             }
         }
     }
