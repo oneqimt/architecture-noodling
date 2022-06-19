@@ -35,4 +35,7 @@
     <string name="enter_valid_values">Please enter valid values to save.</string>
     <string name="fields_are_not_valid">Fields are not valid.</string>
     <string name="no_login">No Login</string>
+    <string name="no_coins_yet">There was an error retrieving your coins.
+        You may not have any coins yet. Please click the plus button to add.</string>
+    <string name="error_retrieving_coins">There was an error retrieving your coins. Try to logout and log back in.</string>
 </resources>

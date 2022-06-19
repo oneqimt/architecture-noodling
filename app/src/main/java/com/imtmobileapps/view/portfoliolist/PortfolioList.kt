@@ -9,23 +9,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.imtmobileapps.R
 import com.imtmobileapps.components.CircularProgressBar
 import com.imtmobileapps.components.PortfolioListAppBar
 import com.imtmobileapps.model.CryptoValue
+import com.imtmobileapps.ui.theme.staticTextColor
 import com.imtmobileapps.util.*
 import com.imtmobileapps.util.Constants.PORTFOLIO_LIST_TAG
 import kotlinx.coroutines.launch
 import logcat.logcat
+import retrofit2.HttpException
+import retrofit2.http.HTTP
 
 
 @ExperimentalAnimationApi
@@ -51,7 +55,6 @@ fun PortfolioList(
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     var doScrollList = false
-
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -96,63 +99,93 @@ fun PortfolioList(
                 )
             }
 
-        },
-        content = {
-            it.calculateTopPadding()
-            when (portfolioCoins.value) {
-                RequestState.Loading -> {
-                    Column(
-                        modifier = Modifier.padding(30.dp),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
+        }
+    ) {
+        it.calculateTopPadding()
+        when (portfolioCoins.value) {
+            RequestState.Loading -> {
+                Column(
+                    modifier = Modifier.padding(30.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
 
-                    ) {
-                        CircularProgressBar()
+                ) {
+                    CircularProgressBar()
+                }
+            }
+
+            is RequestState.Error -> {
+                // if person has no coins yet - 400 error
+                val error = (portfolioCoins.value as RequestState.Error)
+                val errorText: String
+                if (error.exception is HttpException) {
+                    errorText = stringResource(id = R.string.no_coins_yet)
+                    logcat(PORTFOLIO_LIST_TAG) { "MAYBE NO COINS YET CODE is : ${error.exception.code()}" }
+
+                }else{
+                    // handle other exceptions
+                    errorText = stringResource(id = R.string.error_retrieving_coins)
+                }
+                Column(
+                    modifier = Modifier.padding(30.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally)
+                {
+                    Text(
+                        modifier = Modifier.padding(2.dp),
+                        text = errorText,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colors.staticTextColor,
+                        style = MaterialTheme.typography.h6,
+                        maxLines = 9,
+                        overflow = TextOverflow.Ellipsis
+
+                    )
+                }
+            }
+
+            is RequestState.Success -> {
+
+                val list = (portfolioCoins.value as RequestState.Success<List<CryptoValue>>).data
+
+                LaunchedEffect(key1 = sortState.value) {
+                    if (doScrollList) {
+                        scope.launch {
+                            listState.animateScrollToItem(0, 0)
+                        }
                     }
+
                 }
 
-                is RequestState.Success -> {
-
-                    val list = (portfolioCoins.value as RequestState.Success<List<CryptoValue>>).data
-
-                    LaunchedEffect(key1 = sortState.value){
-                        if (doScrollList){
-                            scope.launch {
-                                listState.animateScrollToItem(0, 0)
+                LazyColumn(
+                    // don't use lazy list state here
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(vertical = 4.dp),
+                    state = listState
+                ) {
+                    items(items = list, key = { cryptoValue ->
+                        cryptoValue.id
+                    }) { cryptoValue ->
+                        PortfolioListItem(
+                            cryptoValue = cryptoValue,
+                            onCardClicked = {
+                                // Do not scroll
+                                doScrollList = false
+                                viewModel.setSelectedCryptoValue(cryptoValue)
+                                navController.navigate(Routes.PORTFOLIO_DETAIL)
                             }
-                        }
+                        )
 
                     }
 
-                    LazyColumn(
-                        // don't use lazy list state here
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(vertical = 4.dp),
-                        state = listState
-                    ) {
-                        items(items = list, key = { cryptoValue ->
-                            cryptoValue.id
-                        }) { cryptoValue ->
-                            PortfolioListItem(
-                                cryptoValue = cryptoValue,
-                                onCardClicked = {
-                                    // Do not scroll
-                                    doScrollList = false
-                                    viewModel.setSelectedCryptoValue(cryptoValue)
-                                    navController.navigate(Routes.PORTFOLIO_DETAIL)
-                                }
-                            )
+                } // end lazy column
 
-                        }
+            }
 
-                    } // end lazy column
+            else -> Unit
+        }// end when
 
-                }
-
-                else -> Unit
-            }// end when
-
-        })
+    }
 
 }

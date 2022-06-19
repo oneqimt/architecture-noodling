@@ -12,6 +12,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import logcat.LogPriority
 import logcat.logcat
+import retrofit2.HttpException
 import javax.inject.Inject
 
 
@@ -89,7 +90,6 @@ class PortfolioListViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 logcat(TAG) { "LOGIN Error ${e.localizedMessage}" }
-                // There was an error, set to false
                 _isLoggedIn.update {
                     RequestState.Error(e)
                 }
@@ -113,7 +113,7 @@ class PortfolioListViewModel @Inject constructor(
                 _searchedCoins.value = RequestState.Success(mutableListOf())
                 clearDatabase()
                 clearPersonId() // datastore
-                // NOTE: The sensitive file is deleted in PortfolioList
+                // NOTE: The sensitive file is deleted in PortfolioList where we have context.
                 _isLoggedIn.value = RequestState.LoggedOut
                 logcat(TAG) { "isLoggedIn is : ${isLoggedIn.value}" }
 
@@ -146,6 +146,8 @@ class PortfolioListViewModel @Inject constructor(
                 // initial sort state
                 saveSortState(CoinSort.NAME)
 
+            } catch (e: HttpException){
+                _portfolioCoins.value = RequestState.Error(e)
             } catch (e: Exception) {
                 logcat(TAG) { "Error getting person coins from remote ${e.localizedMessage}" }
                 _portfolioCoins.value = RequestState.Error(e)
