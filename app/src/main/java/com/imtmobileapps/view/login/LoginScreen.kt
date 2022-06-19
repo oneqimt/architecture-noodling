@@ -4,7 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -12,10 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.imtmobileapps.R
-import com.imtmobileapps.components.CircularProgressBar
 import com.imtmobileapps.components.LoginCard
 import com.imtmobileapps.model.Credentials
 import com.imtmobileapps.ui.theme.topAppBarBackgroundColor
@@ -72,6 +69,7 @@ fun LoginScreen(
 
             is RequestState.LoggedOut -> {
                 logcat(LOGIN_SCREEN_TAG) { "RequestState.LoggedOut TODO - cleanup : ${isLoggedIn.value}" }
+                // Could delete sensitive file here, but only
             }
 
             is RequestState.Error -> {
@@ -140,8 +138,8 @@ fun LoginScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                when(isLoggedIn.value){
-                    is RequestState.Loading ->{
+                when (isLoggedIn.value) {
+                    is RequestState.Loading -> {
                         CircularProgressIndicator(
                             color = MaterialTheme.colors.primary,
                         )
@@ -166,7 +164,8 @@ fun LoginScreen(
                                     logcat(LOGIN_SCREEN_TAG) {
                                         "calling viewModel.LOGIN with FILE values : ${credentials.value.username} ${credentials.value.password}"
                                     }
-                                    viewModel.login(credentials.value.username, credentials.value.password)
+                                    viewModel.login(credentials.value.username,
+                                        credentials.value.password)
                                 } else {
                                     // else get the login values from the text fields
                                     logcat(LOGIN_SCREEN_TAG) { "calling viewModel.LOGIN with INPUT TEXT FIELD values ${usernameText.value} ${passwordText.value}" }

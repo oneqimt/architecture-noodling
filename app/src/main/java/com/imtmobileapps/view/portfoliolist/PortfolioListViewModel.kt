@@ -58,7 +58,7 @@ class PortfolioListViewModel @Inject constructor(
     private var loginJob: Job? = null
 
     fun login(uname: String, pass: String) {
-        if (loginJob != null){
+        if (loginJob != null) {
             return
         }
         loginJob = viewModelScope.launch {
@@ -93,7 +93,7 @@ class PortfolioListViewModel @Inject constructor(
                 _isLoggedIn.update {
                     RequestState.Error(e)
                 }
-            }finally {
+            } finally {
                 loginJob = null
             }
         }
@@ -113,7 +113,7 @@ class PortfolioListViewModel @Inject constructor(
                 _searchedCoins.value = RequestState.Success(mutableListOf())
                 clearDatabase()
                 clearPersonId() // datastore
-                // NOTE: The sensitive file is deleted in PortfolioList where we have context.
+                // NOTE: The sensitive file is deleted in PortfolioList, where we have context.
                 _isLoggedIn.value = RequestState.LoggedOut
                 logcat(TAG) { "isLoggedIn is : ${isLoggedIn.value}" }
 
@@ -146,7 +146,7 @@ class PortfolioListViewModel @Inject constructor(
                 // initial sort state
                 saveSortState(CoinSort.NAME)
 
-            } catch (e: HttpException){
+            } catch (e: HttpException) {
                 _portfolioCoins.value = RequestState.Error(e)
             } catch (e: Exception) {
                 logcat(TAG) { "Error getting person coins from remote ${e.localizedMessage}" }

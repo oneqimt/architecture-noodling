@@ -24,12 +24,14 @@ import com.imtmobileapps.components.CircularProgressBar
 import com.imtmobileapps.components.PortfolioListAppBar
 import com.imtmobileapps.model.CryptoValue
 import com.imtmobileapps.ui.theme.staticTextColor
-import com.imtmobileapps.util.*
+import com.imtmobileapps.util.CoinSort
 import com.imtmobileapps.util.Constants.PORTFOLIO_LIST_TAG
+import com.imtmobileapps.util.RequestState
+import com.imtmobileapps.util.Routes
+import com.imtmobileapps.util.deleteSensitiveFile
 import kotlinx.coroutines.launch
 import logcat.logcat
 import retrofit2.HttpException
-import retrofit2.http.HTTP
 
 
 @ExperimentalAnimationApi
@@ -56,6 +58,44 @@ fun PortfolioList(
     val context = LocalContext.current
     var doScrollList = false
 
+    LaunchedEffect(key1 = portfolioCoins.value, block = {
+
+        when (portfolioCoins.value) {
+            is RequestState.Error -> {
+                val error = (portfolioCoins.value as RequestState.Error)
+                if (error.exception is HttpException) {
+                    // do nothing, it is handled below
+                } else {
+                    scope.launch {
+                        val result = scaffoldState.snackbarHostState.showSnackbar(
+                            message = "$error",
+                            actionLabel = "Login Again",
+                            SnackbarDuration.Long
+                        )
+                        logcat(PORTFOLIO_LIST_TAG) { "result is : ${result.name}" }
+                        if (result == SnackbarResult.ActionPerformed) {
+                            logcat(PORTFOLIO_LIST_TAG) { "THEY clicked retry." }
+                            // Repeated code in this Composable,
+                            // I think we could move the file delete to LoginScreen
+                            try {
+                                deleteSensitiveFile(context = context)
+                            } catch (e: Exception) {
+                                logcat(PORTFOLIO_LIST_TAG) {
+                                    "Problem DELETING FILE ${e.localizedMessage as String}"
+                                }
+                            }
+                            viewModel.logout()
+                            navController.navigate(Routes.LOGIN_SCREEN)
+                        }
+                    }
+
+                }
+
+            }
+            else -> {}
+        }
+    })
+
     Scaffold(
         scaffoldState = scaffoldState,
         backgroundColor = MaterialTheme.colors.background,
@@ -68,7 +108,7 @@ fun PortfolioList(
                             try {
                                 deleteSensitiveFile(context = context)
                             } catch (e: Exception) {
-                                logcat(Constants.PORTFOLIO_LIST_APP_BAR_TAG) {
+                                logcat(PORTFOLIO_LIST_TAG) {
                                     "Problem DELETING FILE ${e.localizedMessage as String}"
                                 }
                             }
@@ -122,7 +162,7 @@ fun PortfolioList(
                     errorText = stringResource(id = R.string.no_coins_yet)
                     logcat(PORTFOLIO_LIST_TAG) { "MAYBE NO COINS YET CODE is : ${error.exception.code()}" }
 
-                }else{
+                } else {
                     // handle other exceptions
                     errorText = stringResource(id = R.string.error_retrieving_coins)
                 }
@@ -145,9 +185,7 @@ fun PortfolioList(
             }
 
             is RequestState.Success -> {
-
                 val list = (portfolioCoins.value as RequestState.Success<List<CryptoValue>>).data
-
                 LaunchedEffect(key1 = sortState.value) {
                     if (doScrollList) {
                         scope.launch {
@@ -178,14 +216,10 @@ fun PortfolioList(
                         )
 
                     }
-
                 } // end lazy column
 
             }
-
             else -> Unit
         }// end when
-
     }
-
 }
