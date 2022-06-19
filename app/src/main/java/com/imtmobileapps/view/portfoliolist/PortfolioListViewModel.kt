@@ -20,9 +20,9 @@ class PortfolioListViewModel @Inject constructor(
     private val repository: CryptoRepository,
 ) : ViewModel() {
 
-    private val _personCoins =
+    private val _portfolioCoins =
         MutableStateFlow<RequestState<List<CryptoValue>>>(RequestState.Idle)
-    val personCoins: StateFlow<RequestState<List<CryptoValue>>> = _personCoins.asStateFlow()
+    val portfolioCoins: StateFlow<RequestState<List<CryptoValue>>> = _portfolioCoins.asStateFlow()
 
     private val _totalValues = MutableStateFlow<RequestState<TotalValues?>>(RequestState.Idle)
     val totalValues: StateFlow<RequestState<TotalValues?>> = _totalValues.asStateFlow()
@@ -106,7 +106,7 @@ class PortfolioListViewModel @Inject constructor(
                 val loggedOut = repository.logout()
                 logcat(TAG) { "LOGOUT and loggedOut is : $loggedOut" }
                 // clear all existing values
-                _personCoins.value = RequestState.Success(mutableListOf())
+                _portfolioCoins.value = RequestState.Success(mutableListOf())
                 _person.value = null
                 _personId.value = -1 // on view model
                 _totalValues.value = RequestState.Success(getDummyTotalsValue())
@@ -125,7 +125,7 @@ class PortfolioListViewModel @Inject constructor(
     }
 
     private fun fetchUserDataFromRemote() {
-        _personCoins.value = RequestState.Loading
+        _portfolioCoins.value = RequestState.Loading
         viewModelScope.launch {
             // Trigger repository requests in parallel
             try {
@@ -133,22 +133,22 @@ class PortfolioListViewModel @Inject constructor(
                     repository.getPersonCoins(personId = personId.value, DataSource.REMOTE)
                 }
                 RequestState.Success(coinsDeferred.await().collect {
-                    _personCoins.value = it
+                    _portfolioCoins.value = it
                 })
-                val personCoinsList =
-                    (personCoins.value as RequestState.Success<List<CryptoValue>>).data
+                val portfolioCoinsList =
+                    (portfolioCoins.value as RequestState.Success<List<CryptoValue>>).data
                 // SET A DEFAULT SORT on the LIST
-                val sortedlist = sortCryptoValueList(personCoinsList, CoinSort.NAME)
-                _personCoins.value = RequestState.Success(sortedlist)
+                val sortedlist = sortCryptoValueList(portfolioCoinsList, CoinSort.NAME)
+                _portfolioCoins.value = RequestState.Success(sortedlist)
                 // Call deleteAllCoins on database first (prices vary tremendously)
                 deleteAllCoins()
-                storeCoinsInDatabase(personCoinsList)
+                storeCoinsInDatabase(portfolioCoinsList)
                 // initial sort state
                 saveSortState(CoinSort.NAME)
 
             } catch (e: Exception) {
                 logcat(TAG) { "Error getting person coins from remote ${e.localizedMessage}" }
-                _personCoins.value = RequestState.Error(e)
+                _portfolioCoins.value = RequestState.Error(e)
             }
 
             try {
@@ -255,10 +255,10 @@ class PortfolioListViewModel @Inject constructor(
                 }.collect {
                     _sortState.value = RequestState.Success(it)
                     val sortStateCache = (RequestState.Success(it).data)
-                    val personCoinsList =
-                        (personCoins.value as RequestState.Success<List<CryptoValue>>).data
-                    val sortedlist = sortCryptoValueList(personCoinsList, sortStateCache)
-                    _personCoins.value = RequestState.Success(sortedlist)
+                    val portfolioCoinsList =
+                        (portfolioCoins.value as RequestState.Success<List<CryptoValue>>).data
+                    val sortedlist = sortCryptoValueList(portfolioCoinsList, sortStateCache)
+                    _portfolioCoins.value = RequestState.Success(sortedlist)
                 }
             } catch (e: Exception) {
                 _sortState.value = RequestState.Error(e)

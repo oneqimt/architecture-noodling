@@ -40,8 +40,8 @@ fun PortfolioList(
         // prevents going back to login
     }
 
-    val personCoins: State<RequestState<List<CryptoValue>>> =
-        viewModel.personCoins.collectAsState()
+    val portfolioCoins: State<RequestState<List<CryptoValue>>> =
+        viewModel.portfolioCoins.collectAsState()
 
     val sortState: State<RequestState<CoinSort>> = viewModel.sortState.collectAsState()
 
@@ -99,7 +99,7 @@ fun PortfolioList(
         },
         content = {
             it.calculateTopPadding()
-            when (personCoins.value) {
+            when (portfolioCoins.value) {
                 RequestState.Loading -> {
                     Column(
                         modifier = Modifier.padding(30.dp),
@@ -113,7 +113,7 @@ fun PortfolioList(
 
                 is RequestState.Success -> {
 
-                    val list = (personCoins.value as RequestState.Success<List<CryptoValue>>).data
+                    val list = (portfolioCoins.value as RequestState.Success<List<CryptoValue>>).data
 
                     LaunchedEffect(key1 = sortState.value){
                         if (doScrollList){
@@ -134,7 +134,7 @@ fun PortfolioList(
                         items(items = list, key = { cryptoValue ->
                             cryptoValue.id
                         }) { cryptoValue ->
-                            PersonCoinsListItem(
+                            PortfolioListItem(
                                 cryptoValue = cryptoValue,
                                 onCardClicked = {
                                     // Do not scroll

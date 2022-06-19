@@ -25,7 +25,7 @@ import com.imtmobileapps.R
 
 @ExperimentalMaterialApi
 @Composable
-fun PersonCoinsListItem(
+fun PortfolioListItem(
     cryptoValue: CryptoValue,
     onCardClicked: () -> Unit,
 ) {
@@ -162,7 +162,7 @@ fun PersonCoinsListItem(
 @ExperimentalMaterialApi
 @Composable
 @Preview
-private fun PersonCoinsListItemPreview() {
-    PersonCoinsListItem(cryptoValue = getDummyCryptoValue(), onCardClicked = {})
+private fun PortfolioListItemPreview() {
+    PortfolioListItem(cryptoValue = getDummyCryptoValue(), onCardClicked = {})
 
 }
