@@ -48,6 +48,8 @@ enum class SearchAppBarState {
     CLOSED
 }
 
+fun Double.roundDecimal(digit: Int) = "%.${digit}f".format(this)
+
 fun sortCryptoValueList(
     list: List<CryptoValue>,
     coinSort: CoinSort,

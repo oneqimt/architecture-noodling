@@ -44,7 +44,7 @@ fun EditCoin(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight()
+            .fillMaxHeight(0.7f)
             .padding(10.dp),
         elevation = 4.dp,
         border = BorderStroke(0.1.dp, MaterialTheme.colors.cardBorderColor),

@@ -22,6 +22,7 @@ import com.imtmobileapps.R
 import com.imtmobileapps.model.CryptoValue
 import com.imtmobileapps.ui.theme.*
 import com.imtmobileapps.util.getDummyCryptoValue
+import com.imtmobileapps.util.roundDecimal
 
 @ExperimentalMaterialApi
 @Composable
@@ -124,15 +125,17 @@ fun PortfolioListItem(
                 )
 
                 cryptoValue.coin.apply {
-                    Text(
-                        modifier = Modifier.padding(2.dp),
-                        text = currentPrice.toString(),
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colors.staticTextColor,
-                        style = MaterialTheme.typography.caption,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    currentPrice?.toDouble()?.let {
+                        Text(
+                            modifier = Modifier.padding(2.dp),
+                            text = it.roundDecimal(6),
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colors.staticTextColor,
+                            style = MaterialTheme.typography.caption,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
 
                     Text(
                         modifier = Modifier.padding(2.dp),
