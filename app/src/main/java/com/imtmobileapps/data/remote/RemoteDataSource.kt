@@ -4,7 +4,8 @@ import com.imtmobileapps.model.*
 import javax.inject.Inject
 
 class RemoteDataSource @Inject constructor(
-    private val cryptoApi: CryptoApi
+    private val cryptoApi: CryptoApi,
+    private val geckoApi: GeckoApi
 ){
     suspend fun getPersonCoins(personId : Int): List<CryptoValue> {
         return cryptoApi.getPersonCoins(personId)
@@ -44,5 +45,10 @@ class RemoteDataSource @Inject constructor(
 
     fun updateHolding(coinHolding: CoinHolding): Holdings{
         return cryptoApi.updateHolding(coinHolding)
+    }
+
+    suspend fun getChartData(ids: String): List<GeckoCoin>{
+        return geckoApi.getChartData(ids)
+
     }
 }

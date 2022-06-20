@@ -1,7 +1,6 @@
 package com.imtmobileapps.view.portfoliodetail
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.gestures.Orientation
@@ -18,21 +17,23 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.imtmobileapps.components.EditCoin
 import com.imtmobileapps.model.CryptoValue
+import com.imtmobileapps.model.GeckoCoin
 import com.imtmobileapps.model.TotalValues
 import com.imtmobileapps.ui.theme.*
+import com.imtmobileapps.util.Constants.PORTFOLIO_DETAIL_TAG
 import com.imtmobileapps.util.RequestState
 import com.imtmobileapps.util.RowType
 import com.imtmobileapps.util.SheetType
 import com.imtmobileapps.util.removeWhiteSpace
 import com.imtmobileapps.view.portfoliolist.PortfolioListViewModel
 import kotlinx.coroutines.launch
+import logcat.logcat
 
 @ExperimentalMaterialApi
 @Composable
@@ -61,6 +62,8 @@ fun PortfolioDetail(
     val totalValuesFromModel: State<RequestState<TotalValues?>> =
         viewModel.totalValues.collectAsState()
 
+    val chartData: State<List<GeckoCoin>> = viewModel.chartData.collectAsState()
+
     // we need to get the person's TotalValues from database as well
     val success = totalValuesFromModel.value as RequestState.Success<*>
     val totalValues = success.data as TotalValues?
@@ -72,6 +75,17 @@ fun PortfolioDetail(
     val costValueText = rememberSaveable {
         mutableStateOf("")
     }
+
+    LaunchedEffect(key1 = chartData.value, block = {
+        if (chartData.value.isNotEmpty()) {
+            // SHOW CHART
+            val minY = chartData.value.first().sparklineIn7D.price.first()
+            val maxY = chartData.value.first().sparklineIn7D.price.last()
+            logcat(PORTFOLIO_DETAIL_TAG) { "MIN-Y is  $minY MAX-Y is $maxY" }
+        } else {
+            // SHOW LAYOUT WITHOUT CHART
+        }
+    })
 
     BottomSheetScaffold(
         scaffoldState = scaffoldState,

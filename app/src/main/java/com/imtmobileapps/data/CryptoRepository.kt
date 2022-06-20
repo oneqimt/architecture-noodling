@@ -23,6 +23,7 @@ interface CryptoRepository {
     fun updateHolding(coinHolding: CoinHolding): Flow<Holdings>
 
     fun getPersonCoins(personId : Int, dataSource: DataSource): Flow<RequestState<List<CryptoValue>>>
+    fun getChartData(ids: String): Flow<List<GeckoCoin>>
 
     fun getAllCoins(): Flow<RequestState<MutableList<Coin>>>
 

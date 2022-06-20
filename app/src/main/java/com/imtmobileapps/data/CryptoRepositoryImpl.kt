@@ -17,9 +17,9 @@ import javax.inject.Inject
 @ViewModelScoped
 class CryptoRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
-    private val localDataSource: LocalDataSource
+    private val localDataSource: LocalDataSource,
 
-) : CryptoRepository {
+    ) : CryptoRepository {
 
     override fun resetPassword(email: String): Flow<ReturnDTO> {
         return flow {
@@ -29,21 +29,21 @@ class CryptoRepositoryImpl @Inject constructor(
     }
 
     override fun addHolding(coinHolding: CoinHolding): Flow<Holdings> {
-        return flow{
+        return flow {
             val holdingAdd = remoteDataSource.addHolding(coinHolding)
             emit(holdingAdd)
         }
     }
 
     override fun deleteHolding(holdings: Holdings): Flow<Holdings> {
-       return flow{
-           val holdingsDelete = remoteDataSource.deleteHolding(holdings)
-           emit(holdingsDelete)
-       }
+        return flow {
+            val holdingsDelete = remoteDataSource.deleteHolding(holdings)
+            emit(holdingsDelete)
+        }
     }
 
     override fun updateHolding(coinHolding: CoinHolding): Flow<Holdings> {
-        return flow{
+        return flow {
             val holdingsUpdate = remoteDataSource.updateHolding(coinHolding)
             emit(holdingsUpdate)
         }
@@ -71,7 +71,7 @@ class CryptoRepositoryImpl @Inject constructor(
         return localDataSource.savePerson(person)
     }
 
-    override suspend fun getPerson(personId: Int): Person{
+    override suspend fun getPerson(personId: Int): Person {
         return localDataSource.getPerson(personId)
     }
 
@@ -195,5 +195,12 @@ class CryptoRepositoryImpl @Inject constructor(
 
     override fun getCacheDuration(): Flow<String> {
         return localDataSource.getCacheDuration()
+    }
+
+    override fun getChartData(ids: String): Flow<List<GeckoCoin>> {
+        return flow {
+            val chartData = remoteDataSource.getChartData(ids)
+            emit(chartData)
+        }
     }
 }

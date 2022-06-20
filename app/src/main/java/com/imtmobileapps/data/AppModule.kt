@@ -5,8 +5,10 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.imtmobileapps.data.local.*
 import com.imtmobileapps.data.remote.CryptoApi
+import com.imtmobileapps.data.remote.GeckoApi
 import com.imtmobileapps.data.remote.RemoteDataSource
 import com.imtmobileapps.util.Constants.BASE_URL
+import com.imtmobileapps.util.Constants.COIN_GECKO_BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,6 +44,17 @@ object AppModule {
 
     @Singleton
     @Provides
+    fun geckoAPI(): GeckoApi{
+        return Retrofit.Builder().baseUrl(COIN_GECKO_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .client(getOkHttpClient().build())
+            .build()
+            .create(GeckoApi::class.java)
+    }
+
+    @Singleton
+    @Provides
     fun getOkHttpClient(): OkHttpClient.Builder {
         val builder = OkHttpClient.Builder()
         builder.connectTimeout(15, TimeUnit.SECONDS)
@@ -58,8 +71,8 @@ object AppModule {
     }
     @Singleton
     @Provides
-    fun provideRemoteDataSource(cryptoApi: CryptoApi) : RemoteDataSource {
-        return RemoteDataSource(cryptoApi = cryptoApi)
+    fun provideRemoteDataSource(cryptoApi: CryptoApi,  geckoApi: GeckoApi) : RemoteDataSource {
+        return RemoteDataSource(cryptoApi = cryptoApi, geckoApi = geckoApi)
     }
 
 

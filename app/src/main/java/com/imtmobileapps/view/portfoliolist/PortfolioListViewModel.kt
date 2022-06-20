@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.imtmobileapps.data.CryptoRepository
 import com.imtmobileapps.model.CryptoValue
+import com.imtmobileapps.model.GeckoCoin
 import com.imtmobileapps.model.Person
 import com.imtmobileapps.model.TotalValues
 import com.imtmobileapps.util.*
@@ -40,6 +41,9 @@ class PortfolioListViewModel @Inject constructor(
     private val _isLoggedIn = MutableStateFlow<RequestState<Boolean>>(RequestState.Idle)
     val isLoggedIn: StateFlow<RequestState<Boolean>> = _isLoggedIn.asStateFlow()
 
+    private val _chartData: MutableStateFlow<List<GeckoCoin>> = MutableStateFlow(emptyList())
+    val chartData: StateFlow<List<GeckoCoin>> = _chartData.asStateFlow()
+
     //SORT
     private val _sortState =
         MutableStateFlow<RequestState<CoinSort>>(RequestState.Idle)
@@ -56,6 +60,21 @@ class PortfolioListViewModel @Inject constructor(
     }
 
     private var loginJob: Job? = null
+
+    fun getChartData(ids: String) {
+        viewModelScope.launch {
+            delay(1000L)
+            try {
+                repository.getChartData(ids).collect {
+                    _chartData.value = it
+                    logcat(TAG) { "CHART DATA is $it" }
+                }
+            } catch (e: Exception) {
+                logcat(TAG) { "Error getting chart data ${e.localizedMessage}" }
+                _chartData.value = emptyList()
+            }
+        }
+    }
 
     fun login(uname: String, pass: String) {
         if (loginJob != null) {
@@ -134,6 +153,7 @@ class PortfolioListViewModel @Inject constructor(
                 }
                 RequestState.Success(coinsDeferred.await().collect {
                     _portfolioCoins.value = it
+                    // logcat(TAG){"PORTFOLIO COINS are : ${_portfolioCoins.value}"}
                 })
                 val portfolioCoinsList =
                     (portfolioCoins.value as RequestState.Success<List<CryptoValue>>).data

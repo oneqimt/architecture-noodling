@@ -16,7 +16,9 @@ import com.imtmobileapps.R
 import com.imtmobileapps.model.CryptoValue
 import com.imtmobileapps.model.TotalValues
 import com.imtmobileapps.ui.theme.coinNameTextColor
+import com.imtmobileapps.util.Constants.DECIMAL_PLACES
 import com.imtmobileapps.util.RowType
+import com.imtmobileapps.util.roundDecimal
 
 @Composable
 fun DetailRow(
@@ -62,7 +64,8 @@ fun DetailRow(
 
                 Column() {
                     if (cryptoValue != null) {
-                        TextRow(textValue = cryptoValue.coin.currentPrice.toString())
+                        val currentPrice = cryptoValue.coin.currentPrice?.toDouble()?.roundDecimal(DECIMAL_PLACES)
+                        TextRow(textValue = currentPrice.toString())
                     }
                 }
             }

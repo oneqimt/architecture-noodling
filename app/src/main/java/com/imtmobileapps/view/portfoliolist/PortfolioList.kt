@@ -23,6 +23,7 @@ import com.imtmobileapps.R
 import com.imtmobileapps.components.CircularProgressBar
 import com.imtmobileapps.components.PortfolioListAppBar
 import com.imtmobileapps.model.CryptoValue
+import com.imtmobileapps.model.GeckoCoin
 import com.imtmobileapps.ui.theme.staticTextColor
 import com.imtmobileapps.util.CoinSort
 import com.imtmobileapps.util.Constants.PORTFOLIO_LIST_TAG
@@ -57,6 +58,8 @@ fun PortfolioList(
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     var doScrollList = false
+
+    val chartData: State<List<GeckoCoin>> = viewModel.chartData.collectAsState()
 
     LaunchedEffect(key1 = portfolioCoins.value, block = {
 
@@ -134,6 +137,8 @@ fun PortfolioList(
 
                     onSettingsClicked = {
                         logcat(PORTFOLIO_LIST_TAG) { "Settings clicked" }
+
+
                     },
                     person = it
                 )
@@ -211,13 +216,16 @@ fun PortfolioList(
                                 // Do not scroll
                                 doScrollList = false
                                 viewModel.setSelectedCryptoValue(cryptoValue)
+                                cryptoValue.coin.slug.let { chartData ->
+                                    if (chartData != null) {
+                                        viewModel.getChartData(chartData)
+                                    }
+                                }
                                 navController.navigate(Routes.PORTFOLIO_DETAIL)
                             }
                         )
-
                     }
                 } // end lazy column
-
             }
             else -> Unit
         }// end when

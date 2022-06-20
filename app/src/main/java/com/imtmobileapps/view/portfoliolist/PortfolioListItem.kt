@@ -21,6 +21,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.imtmobileapps.R
 import com.imtmobileapps.model.CryptoValue
 import com.imtmobileapps.ui.theme.*
+import com.imtmobileapps.util.Constants.DECIMAL_PLACES
 import com.imtmobileapps.util.getDummyCryptoValue
 import com.imtmobileapps.util.roundDecimal
 
@@ -128,7 +129,7 @@ fun PortfolioListItem(
                     currentPrice?.toDouble()?.let {
                         Text(
                             modifier = Modifier.padding(2.dp),
-                            text = it.roundDecimal(6),
+                            text = it.roundDecimal(DECIMAL_PLACES),
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colors.staticTextColor,
                             style = MaterialTheme.typography.caption,

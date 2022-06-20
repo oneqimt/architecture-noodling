@@ -3,6 +3,7 @@ package com.imtmobileapps.util
 object Constants {
     const val BASE_URL = "https://www.imtmobileapps.com/"
     const val CMC_LOGO_URL = "https://s2.coinmarketcap.com/static/img/coins/64x64/"
+    const val COIN_GECKO_BASE_URL = "https://api.coingecko.com/api/v3/coins/"
 
     // DataStore
     const val PREFERENCE_NAME = "crypto_preferences"
@@ -20,6 +21,9 @@ object Constants {
     // REGISTER
     const val ROLE_USER = "ROLE_USER"
     const val ENABLED = 1
+
+    // DECIMAL PLACES to show for current price
+    const val DECIMAL_PLACES = 2
 
     const val LOGIN_SCREEN_TAG = "LoginScreen"
     const val PORTFOLIO_LIST_TAG = "PortfolioList"
