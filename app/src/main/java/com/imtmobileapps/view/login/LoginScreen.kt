@@ -64,6 +64,16 @@ fun LoginScreen(
             }
             is RequestState.Success -> {
                 logcat(LOGIN_SCREEN_TAG) { "RequestState.Success is : ${isLoggedIn.value}" }
+                try {
+                    writeUsernameAndPassword(context = context,
+                        usernameText.value,
+                        passwordText.value)
+                    logcat(LOGIN_SCREEN_TAG) { "Write file success!" }
+
+                } catch (e: Exception) {
+                    // notify user that the file already exists
+                    logcat(LOGIN_SCREEN_TAG) { "Problem writing file ${e.localizedMessage as String}" }
+                }
                 navController.navigate(Routes.PORTFOLIO_LIST)
             }
 
@@ -191,21 +201,7 @@ fun LoginScreen(
                                     } catch (e: Exception) {
                                         logcat(LOGIN_SCREEN_TAG) { e.asLog() }
                                     }
-
-                                } else {
-                                    // write it
-                                    try {
-                                        writeUsernameAndPassword(context = context,
-                                            usernameText.value,
-                                            passwordText.value)
-                                        logcat(LOGIN_SCREEN_TAG) { "Write file success!" }
-
-                                    } catch (e: Exception) {
-                                        // notify user that the file already exists
-                                        logcat(LOGIN_SCREEN_TAG) { "Problem writing file ${e.localizedMessage as String}" }
-                                    }
                                 }
-
                             },
                             checked = checked.value
                         )// end card
