@@ -59,8 +59,6 @@ fun PortfolioList(
     val context = LocalContext.current
     var doScrollList = false
 
-    val chartData: State<List<GeckoCoin>> = viewModel.chartData.collectAsState()
-
     LaunchedEffect(key1 = portfolioCoins.value, block = {
 
         when (portfolioCoins.value) {
@@ -216,11 +214,11 @@ fun PortfolioList(
                                 // Do not scroll
                                 doScrollList = false
                                 viewModel.setSelectedCryptoValue(cryptoValue)
-                                cryptoValue.coin.slug.let { chartData ->
+                                /*cryptoValue.coin.slug.let { chartData ->
                                     if (chartData != null) {
                                         viewModel.getChartData(chartData)
                                     }
-                                }
+                                }*/
                                 navController.navigate(Routes.PORTFOLIO_DETAIL)
                             }
                         )

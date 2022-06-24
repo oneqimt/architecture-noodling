@@ -45,7 +45,7 @@ data class GeckoCoin(
     val atlChangePercentage: Double,
     @SerializedName("atl_date")
     val atlDate: String,
-    val roi: Roi,
+    val roi: Roi?,
     @SerializedName("last_updated")
     val lastUpdated: String,
     @SerializedName("sparkline_in_7d")
