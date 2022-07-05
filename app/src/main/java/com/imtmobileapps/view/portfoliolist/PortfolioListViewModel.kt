@@ -2,10 +2,8 @@ package com.imtmobileapps.view.portfoliolist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.imtmobileapps.components.DataPoint
 import com.imtmobileapps.data.CryptoRepository
 import com.imtmobileapps.model.CryptoValue
-import com.imtmobileapps.model.GeckoCoin
 import com.imtmobileapps.model.Person
 import com.imtmobileapps.model.TotalValues
 import com.imtmobileapps.util.*

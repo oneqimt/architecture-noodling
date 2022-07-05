@@ -3,7 +3,6 @@ package com.imtmobileapps.util
 import android.content.Context
 import androidx.security.crypto.EncryptedFile
 import androidx.security.crypto.MasterKeys
-import com.imtmobileapps.components.DataPoint
 import com.imtmobileapps.model.*
 import com.imtmobileapps.util.Constants.CRYPTO_SENSITIVE_DATA_FILE
 import com.imtmobileapps.util.Constants.ENABLED
@@ -13,7 +12,6 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.math.BigDecimal
 import java.nio.charset.StandardCharsets
-import kotlin.random.Random
 
 
 enum class DataSource {
@@ -50,7 +48,9 @@ enum class SearchAppBarState {
     CLOSED
 }
 
-fun Double.roundDecimal(digit: Int) = "%.${digit}f".format(this)
+fun Double.roundDecimal(digit: Int): String{
+    return "%.${digit}f".format(this)
+}
 
 fun sortCryptoValueList(
     list: List<CryptoValue>,
@@ -78,9 +78,7 @@ fun sortCryptoValueList(
 
 }
 
-// This would be a good extension for String class
 fun removeWhiteSpace(str: String): String {
-
     return if (str.isNotEmpty()) {
         str.filter {
             !it.isWhitespace()
@@ -255,33 +253,6 @@ fun getDummyPerson(): Person {
         zip = "",
         state = State(id = 0, "", "", "")
     )
-}
-
-fun getDataPoints(): List<DataPoint> {
-    val arr = mutableListOf<DataPoint>()
-    val d1 =  DataPoint(x=0.0.toFloat(), y=75087.934.toFloat())
-    val d2 =  DataPoint(x=1.0.toFloat(), y=12887.876.toFloat())
-    val d3 =  DataPoint(x=0.0.toFloat(), y=19423.826.toFloat())
-    val d4 =  DataPoint(x=0.0.toFloat(), y=19803.586.toFloat())
-    val d5 =  DataPoint(x=0.0.toFloat(), y=50000.348.toFloat())
-    val d6 =  DataPoint(x=0.0.toFloat(), y=20417.207.toFloat())
-    val d7 =  DataPoint(x=0.0.toFloat(), y=20697.658.toFloat())
-    arr.add(d1)
-    arr.add(d2)
-    arr.add(d3)
-    arr.add(d4)
-    arr.add(d5)
-    arr.add(d6)
-    arr.add(d7)
-    arr.sortBy {
-        it.x
-    }
-
-    return arr
-    /*val random = Random.Default
-    return (0..7).map {
-        DataPoint(it.toFloat(), random.nextInt(50).toFloat() + 1f)
-    }*/
 }
 
 fun getDummyGeckoCoin(): GeckoCoin {
