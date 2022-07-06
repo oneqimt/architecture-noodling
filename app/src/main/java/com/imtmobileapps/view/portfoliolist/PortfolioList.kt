@@ -214,11 +214,6 @@ fun PortfolioList(
                                 // Do not scroll
                                 doScrollList = false
                                 viewModel.setSelectedCryptoValue(cryptoValue)
-                                /*cryptoValue.coin.slug.let { chartData ->
-                                    if (chartData != null) {
-                                        viewModel.getChartData(chartData)
-                                    }
-                                }*/
                                 navController.navigate(Routes.PORTFOLIO_DETAIL)
                             }
                         )

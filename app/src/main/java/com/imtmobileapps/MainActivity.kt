@@ -20,6 +20,7 @@ import com.imtmobileapps.view.login.LoginScreen
 import com.imtmobileapps.view.portfoliodetail.PortfolioDetail
 import com.imtmobileapps.view.portfoliolist.PortfolioList
 import com.imtmobileapps.view.portfoliolist.PortfolioListViewModel
+import com.imtmobileapps.view.signup.SignUpScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -72,6 +73,36 @@ class MainActivity : ComponentActivity() {
 
                         ) {
                             LoginScreen(
+                                viewModel = viewModel,
+                                navController = navController
+                            )
+                        }
+                        // SIGN UP SCREEN
+                        composable(
+                            Routes.SIGN_UP_SCREEN,
+                            enterTransition = {
+                                when (initialState.destination.route) {
+                                    Routes.LOGIN_SCREEN ->
+                                        slideIntoContainer(
+                                            AnimatedContentScope.SlideDirection.Left,
+                                            animationSpec = tween(700)
+                                        )
+                                    else -> null
+                                }
+                            },
+                            exitTransition = {
+                                when (targetState.destination.route) {
+                                    Routes.LOGIN_SCREEN ->
+                                        slideOutOfContainer(
+                                            AnimatedContentScope.SlideDirection.Right,
+                                            animationSpec = tween(700)
+                                        )
+                                    else -> null
+                                }
+                            }
+
+                        ){
+                            SignUpScreen(
                                 viewModel = viewModel,
                                 navController = navController
                             )

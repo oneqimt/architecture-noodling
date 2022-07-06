@@ -189,6 +189,7 @@ fun LoginScreen(
                             },
                             onCreateAccountClicked = {
                                 logcat(LOGIN_SCREEN_TAG) { "onCreateAccountClicked" }
+                                navController.navigate(Routes.SIGN_UP_SCREEN)
 
                             },
 

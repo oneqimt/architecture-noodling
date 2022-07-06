@@ -162,6 +162,15 @@ fun validatePassword(pass: String): Boolean {
     return pass.isNotEmpty() && pass.length >= MINIMUM_CHARS
 }
 
+fun validateEmail(email : String): Boolean{
+    var isValidEmail = false
+    if (email.isNotEmpty()){
+        isValidEmail = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+   return isValidEmail
+
+}
+
 fun validateAddHoldingValues(quantity: String, cost: String): Boolean {
     val quantityClean = removeWhiteSpace(quantity)
     val costClean = removeWhiteSpace(cost)
@@ -314,3 +323,4 @@ fun getDummyGeckoCoin(): GeckoCoin {
         ))
 
 }
+

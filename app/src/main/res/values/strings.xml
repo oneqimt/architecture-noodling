@@ -38,4 +38,6 @@
     <string name="no_coins_yet">There was an error retrieving your coins.
         You may not have any coins yet. Please click the plus button to add.</string>
     <string name="error_retrieving_coins">There was an error retrieving your coins. Try to logout and log back in.</string>
+    <string name="email">Email*</string>
+    <string name="register">Register</string>
 </resources>
