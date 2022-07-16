@@ -1,6 +1,10 @@
 package com.imtmobileapps.util
 
 import android.content.Context
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.SnackbarResult
+import androidx.lifecycle.viewModelScope
 import androidx.security.crypto.EncryptedFile
 import androidx.security.crypto.MasterKeys
 import com.imtmobileapps.model.*
@@ -8,6 +12,11 @@ import com.imtmobileapps.util.Constants.CRYPTO_SENSITIVE_DATA_FILE
 import com.imtmobileapps.util.Constants.ENABLED
 import com.imtmobileapps.util.Constants.MINIMUM_CHARS
 import com.imtmobileapps.util.Constants.ROLE_USER
+import com.imtmobileapps.view.portfoliolist.PortfolioListViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import logcat.LogPriority
+import logcat.logcat
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.math.BigDecimal
@@ -46,6 +55,19 @@ enum class SheetType {
 enum class SearchAppBarState {
     OPENED,
     CLOSED
+}
+
+fun showSnackbar(scaffoldState: ScaffoldState, scope: CoroutineScope): SnackbarResult{
+    // show snack bar to user
+    var result:SnackbarResult = SnackbarResult.Dismissed
+    scope.launch {
+        result = scaffoldState.snackbarHostState.showSnackbar(
+            message = "Those values and not valid. Please retry.",
+            actionLabel = "Retry",
+            SnackbarDuration.Long
+        )
+    }
+    return result
 }
 
 fun Double.roundDecimal(digit: Int): String{
@@ -169,6 +191,17 @@ fun validateEmail(email : String): Boolean{
     }
    return isValidEmail
 
+}
+
+fun validateSignUp(email: String, username: String, pass: String):Boolean{
+    val emailValid: Boolean = validateEmail(email)
+    val usernameValid: Boolean = validateUsername(username)
+    val passwordValid: Boolean = validatePassword(pass)
+
+    if (emailValid && usernameValid && passwordValid){
+        return true
+    }
+    return false
 }
 
 fun validateAddHoldingValues(quantity: String, cost: String): Boolean {
@@ -323,4 +356,37 @@ fun getDummyGeckoCoin(): GeckoCoin {
         ))
 
 }
+
+// UNUSED methods on PortfolioListViewModel as of now
+/*fun searchDatabase(searchQuery: String) {
+    _searchedCoins.value = RequestState.Loading
+    viewModelScope.launch {
+        try {
+            repository.searchDatabase(searchQuery = "%$searchQuery%")
+                .collect {
+                    _searchedCoins.value = RequestState.Success(it)
+                    val coin =
+                        (searchedCoins.value as RequestState.Success<List<CryptoValue>>).data
+                    println("${PortfolioListViewModel.TAG} in searchDatabase and coins are : $coin")
+                }
+
+        } catch (e: Exception) {
+            _searchedCoins.value = RequestState.Error(e)
+            logcat(PortfolioListViewModel.TAG, LogPriority.ERROR) { e.localizedMessage as String }
+        }
+    }
+}*/
+
+/*private fun fetchTotalValuesFromDatabase() {
+    _totalValues.value = RequestState.Loading
+    viewModelScope.launch {
+        try {
+            repository.getTotalValues(1).collect {
+                _totalValues.value = RequestState.Success(it).data
+            }
+        } catch (e: Exception) {
+            logcat(PortfolioListViewModel.TAG, LogPriority.ERROR) { e.localizedMessage as String }
+        }
+    }
+}*/
 

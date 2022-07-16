@@ -31,10 +31,12 @@ import com.imtmobileapps.R
 import com.imtmobileapps.ui.theme.cardBackgroundColor
 import com.imtmobileapps.ui.theme.cardBorderColor
 import com.imtmobileapps.util.Constants
+import com.imtmobileapps.util.Constants.SIGN_UP_CARD
 import com.imtmobileapps.util.validateEmail
 import com.imtmobileapps.util.validatePassword
 import com.imtmobileapps.util.validateUsername
 import kotlinx.coroutines.launch
+import logcat.logcat
 
 @Composable
 fun SignUpCard(
@@ -67,8 +69,6 @@ fun SignUpCard(
         val passwordVisibility = remember { mutableStateOf(false) }
         // string resources
         val errorMessage = stringResource(id = R.string.check_fields)
-        val enterValidValues = stringResource(id = R.string.enter_valid_values)
-        val fieldsNotValid = stringResource(id = R.string.fields_are_not_valid)
 
         Scaffold(scaffoldState = scaffoldState) {
             it.calculateTopPadding()
@@ -91,15 +91,17 @@ fun SignUpCard(
                         keyboardActions = KeyboardActions(onNext = {
                             val isValidEmail = validateEmail(emailText)
                             if (isValidEmail) {
-                                focusManager.moveFocus(FocusDirection.Down)
                                 isEmailError.value = false
+                                focusManager.moveFocus(FocusDirection.Down)
+
                             } else {
-                                isEmailError.value = true
+                                isEmailError.value = false
                             }
                         }),
                         onValueChange = { value ->
+                            logcat(SIGN_UP_CARD){"emailValue is $value"}
                             onEmailChange(value)
-                            isEmailError.value = validateEmail(value)
+                            isEmailError.value = !validateEmail(value)
 
                         },
                         isError = isEmailError.value

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.imtmobileapps.data.CryptoRepository
 import com.imtmobileapps.model.CryptoValue
 import com.imtmobileapps.model.Person
+import com.imtmobileapps.model.SignUp
 import com.imtmobileapps.model.TotalValues
 import com.imtmobileapps.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +21,9 @@ import javax.inject.Inject
 class PortfolioListViewModel @Inject constructor(
     private val repository: CryptoRepository,
 ) : ViewModel() {
+
+    private val _signUP = MutableStateFlow<RequestState<SignUp>>(RequestState.Idle)
+    val signUP : StateFlow<RequestState<SignUp>> = _signUP.asStateFlow()
 
     private val _portfolioCoins =
         MutableStateFlow<RequestState<List<CryptoValue>>>(RequestState.Idle)
@@ -124,6 +128,29 @@ class PortfolioListViewModel @Inject constructor(
 
     }
 
+    fun registerUser(email: String, username: String, password: String ){
+        viewModelScope.launch {
+            try {
+
+               _signUP.value = RequestState.Loading
+                delay(500L)
+                val signUpObj: SignUp = createEmptySignUp()
+                val person = signUpObj.person
+                val auth = signUpObj.auth
+
+                person.email = email
+                auth.username = username
+                auth.password = password
+                repository.signUp(signUpObj).collect{
+                   _signUP.value = RequestState.Success(it).data
+                    logcat(TAG){"ViewModel SIGN UP SUCCESS is ${signUP.value}"}
+                }
+            }catch(e : Exception){
+                _signUP.value =  RequestState.Error(e)
+            }
+        }
+    }
+
     private fun fetchUserDataFromRemote() {
         _portfolioCoins.value = RequestState.Loading
         viewModelScope.launch {
@@ -220,26 +247,6 @@ class PortfolioListViewModel @Inject constructor(
             }
         }
     }
-
-    fun searchDatabase(searchQuery: String) {
-        _searchedCoins.value = RequestState.Loading
-        viewModelScope.launch {
-            try {
-                repository.searchDatabase(searchQuery = "%$searchQuery%")
-                    .collect {
-                        _searchedCoins.value = RequestState.Success(it)
-                        val coin =
-                            (searchedCoins.value as RequestState.Success<List<CryptoValue>>).data
-                        println("$TAG in searchDatabase and coins are : $coin")
-                    }
-
-            } catch (e: Exception) {
-                _searchedCoins.value = RequestState.Error(e)
-                logcat(TAG, LogPriority.ERROR) { e.localizedMessage as String }
-            }
-        }
-    }
-
     /****************** SORT ****************/
     fun saveSortState(coinSort: CoinSort) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -269,20 +276,6 @@ class PortfolioListViewModel @Inject constructor(
             }
         }
 
-    }
-
-
-    private fun fetchTotalValuesFromDatabase() {
-        _totalValues.value = RequestState.Loading
-        viewModelScope.launch {
-            try {
-                repository.getTotalValues(1).collect {
-                    _totalValues.value = RequestState.Success(it).data
-                }
-            } catch (e: Exception) {
-                logcat(TAG, LogPriority.ERROR) { e.localizedMessage as String }
-            }
-        }
     }
 
     // DATASTORE
