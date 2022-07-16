@@ -23,7 +23,6 @@ import com.imtmobileapps.R
 import com.imtmobileapps.components.CircularProgressBar
 import com.imtmobileapps.components.PortfolioListAppBar
 import com.imtmobileapps.model.CryptoValue
-import com.imtmobileapps.model.GeckoCoin
 import com.imtmobileapps.ui.theme.staticTextColor
 import com.imtmobileapps.util.CoinSort
 import com.imtmobileapps.util.Constants.PORTFOLIO_LIST_TAG
@@ -58,6 +57,7 @@ fun PortfolioList(
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     var doScrollList = false
+    var isSuccessPerson = false
 
     LaunchedEffect(key1 = portfolioCoins.value, block = {
 
@@ -100,8 +100,8 @@ fun PortfolioList(
     Scaffold(
         scaffoldState = scaffoldState,
         backgroundColor = MaterialTheme.colors.background,
-        topBar = {
 
+        topBar = {
             person.value?.let {
                 PortfolioListAppBar(
                     onLogout = {
@@ -113,11 +113,9 @@ fun PortfolioList(
                                     "Problem DELETING FILE ${e.localizedMessage as String}"
                                 }
                             }
-
                         }
                         viewModel.logout()
                         navController.navigate(Routes.LOGIN_SCREEN)
-
                     },
                     onSaveSortState = { coinSort ->
                         doScrollList = true
@@ -132,15 +130,17 @@ fun PortfolioList(
                         logcat(PORTFOLIO_LIST_TAG) { "Add clicked navigate to HoldingDetailScreen" }
                         navController.navigate(Routes.HOLDING_LIST)
                     },
-
                     onSettingsClicked = {
                         logcat(PORTFOLIO_LIST_TAG) { "Settings clicked" }
-
-
+                    },
+                    onAccountClicked ={
+                        logcat(PORTFOLIO_LIST_TAG) { "Account clicked" }
                     },
                     person = it
+
                 )
             }
+
 
         }
     ) {

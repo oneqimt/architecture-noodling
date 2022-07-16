@@ -1,6 +1,7 @@
 package com.imtmobileapps.data.remote
 
 import com.imtmobileapps.model.*
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class RemoteDataSource @Inject constructor(
@@ -45,6 +46,10 @@ class RemoteDataSource @Inject constructor(
 
     fun updateHolding(coinHolding: CoinHolding): Holdings{
         return cryptoApi.updateHolding(coinHolding)
+    }
+
+    suspend fun updatePerson(person: Person): Person {
+        return cryptoApi.updatePerson(person)
     }
 
     suspend fun getChartData(ids: String): List<GeckoCoin>{

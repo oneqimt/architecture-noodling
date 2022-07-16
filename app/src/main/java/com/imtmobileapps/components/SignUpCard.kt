@@ -95,7 +95,7 @@ fun SignUpCard(
                                 focusManager.moveFocus(FocusDirection.Down)
 
                             } else {
-                                isEmailError.value = false
+                                isEmailError.value = true
                             }
                         }),
                         onValueChange = { value ->
@@ -194,6 +194,8 @@ fun SignUpCard(
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
+                            // TEMP!!!
+                            onRegisterClicked()
                             // check if all fields are valid
                             if (validateEmail(emailText) && validateUsername(usernameText) && validatePassword(passwordText)){
                                 onRegisterClicked()

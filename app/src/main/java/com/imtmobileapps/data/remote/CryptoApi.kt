@@ -23,6 +23,9 @@ interface CryptoApi {
     @POST("holdings?action=updateholding")
     fun updateHolding(@Body coinHolding: CoinHolding) : Holdings
 
+    @POST("person?action=update")
+    suspend fun updatePerson(@Body person : Person) : Person
+
     @FormUrlEncoded
     @POST("login")
     suspend fun login(

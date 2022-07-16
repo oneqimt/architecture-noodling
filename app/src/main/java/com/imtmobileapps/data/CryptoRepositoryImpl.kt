@@ -79,6 +79,13 @@ class CryptoRepositoryImpl @Inject constructor(
         localDataSource.deletePerson()
     }
 
+    override fun updatePerson(person: Person): Flow<Person> {
+        return flow {
+            val person = remoteDataSource.updatePerson(person)
+            emit(person)
+        }
+    }
+
     override fun getPersonCoins(
         personId: Int,
         dataSource: DataSource,

@@ -25,6 +25,7 @@ fun PortfolioListAppBar(
     onGetSortState: () -> Unit,
     onAddClicked: () -> Unit,
     onSettingsClicked: () -> Unit,
+    onAccountClicked: () -> Unit,
     person: Person,
 ) {
 
@@ -48,6 +49,11 @@ fun PortfolioListAppBar(
             onAddClicked()
         },
 
+        onAccountClicked = {
+            logcat(PORTFOLIO_LIST_APP_BAR_TAG) { "onAccount clicked" }
+            onAccountClicked()
+        },
+
         person = person
 
     )
@@ -60,6 +66,7 @@ fun DefaultListAppBar(
     onLogoutClicked: () -> Unit,
     onSettingsClicked: () -> Unit,
     onAddClicked: () -> Unit,
+    onAccountClicked: () -> Unit,
     person: Person,
 ) {
     val name = "${person.firstName} ${person.lastName}"
@@ -78,7 +85,8 @@ fun DefaultListAppBar(
                 onSortClicked = onSortClicked,
                 onLogoutClicked = onLogoutClicked,
                 onSettingsClicked = onSettingsClicked,
-                onAddClicked = onAddClicked
+                onAddClicked = onAddClicked,
+                onAccountClicked = onAccountClicked
             )
         },
         backgroundColor = MaterialTheme.colors.topAppBarBackgroundColor
@@ -91,6 +99,7 @@ fun ListAppBarActions(
     onLogoutClicked: () -> Unit,
     onSettingsClicked: () -> Unit,
     onAddClicked: () -> Unit,
+    onAccountClicked: () -> Unit
 ) {
     AddAction(onAddClicked = onAddClicked)
     SortAction(onSortClicked = onSortClicked)
@@ -100,6 +109,9 @@ fun ListAppBarActions(
         },
         onLogoutClicked = {
             onLogoutClicked()
+        },
+        onAccountClicked = {
+            onAccountClicked()
         }
     )
 
@@ -176,6 +188,7 @@ fun SortAction(
 fun VerticalMenuAction(
     onLogoutClicked: () -> Unit,
     onSettingsClicked: () -> Unit,
+    onAccountClicked: () -> Unit
 ) {
     var expanded by remember {
         mutableStateOf(false)
@@ -209,6 +222,17 @@ fun VerticalMenuAction(
 
             DropdownMenuItem(onClick = {
                 expanded = false
+                onAccountClicked()
+            }) {
+                Text(
+                    modifier = Modifier.padding(start = LARGE_PADDING),
+                    text = stringResource(R.string.account),
+                    style = MaterialTheme.typography.subtitle2
+                )
+            }
+
+            DropdownMenuItem(onClick = {
+                expanded = false
                 onLogoutClicked()
 
             }) {
@@ -230,6 +254,7 @@ private fun DefaultListAppBarPreview() {
         onLogoutClicked = {},
         onSettingsClicked = {},
         onAddClicked = {},
+        onAccountClicked = {},
         person = getDummyPerson()
 
     )

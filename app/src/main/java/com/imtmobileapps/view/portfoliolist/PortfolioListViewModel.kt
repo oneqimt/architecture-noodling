@@ -23,7 +23,7 @@ class PortfolioListViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _signUP = MutableStateFlow<RequestState<SignUp>>(RequestState.Idle)
-    val signUP : StateFlow<RequestState<SignUp>> = _signUP.asStateFlow()
+    val signUP: StateFlow<RequestState<SignUp>> = _signUP.asStateFlow()
 
     private val _portfolioCoins =
         MutableStateFlow<RequestState<List<CryptoValue>>>(RequestState.Idle)
@@ -35,7 +35,7 @@ class PortfolioListViewModel @Inject constructor(
     private val _personId: MutableStateFlow<Int> = MutableStateFlow(-1)
     val personId: StateFlow<Int> = _personId.asStateFlow()
 
-    private var _person: MutableStateFlow<Person?> = MutableStateFlow(null)
+    private var _person: MutableStateFlow<Person?> = MutableStateFlow<Person?>(null)
     var person: StateFlow<Person?> = _person.asStateFlow()
 
     private val _selectedCryptoValue: MutableStateFlow<CryptoValue?> = MutableStateFlow(null)
@@ -128,11 +128,25 @@ class PortfolioListViewModel @Inject constructor(
 
     }
 
-    fun registerUser(email: String, username: String, password: String ){
+    fun updatePerson(person: Person) {
         viewModelScope.launch {
             try {
+                repository.updatePerson(person).collect {
+                    _person.value = it
+                    logcat(TAG) { "UPDATED person is : ${_person.value}" }
+                }
+            } catch (e: Exception) {
+                _person.value = null
+                logcat(TAG) { "ERROR updating person is : ${_person.value}" }
 
-               _signUP.value = RequestState.Loading
+            }
+        }
+    }
+
+    fun registerUser(email: String, username: String, password: String) {
+        viewModelScope.launch {
+            try {
+                _signUP.value = RequestState.Loading
                 delay(500L)
                 val signUpObj: SignUp = createEmptySignUp()
                 val person = signUpObj.person
@@ -141,12 +155,12 @@ class PortfolioListViewModel @Inject constructor(
                 person.email = email
                 auth.username = username
                 auth.password = password
-                repository.signUp(signUpObj).collect{
-                   _signUP.value = RequestState.Success(it).data
-                    logcat(TAG){"ViewModel SIGN UP SUCCESS is ${signUP.value}"}
+                repository.signUp(signUpObj).collect {
+                    _signUP.value = RequestState.Success(it).data
+                    logcat(TAG) { "ViewModel SIGN UP SUCCESS is ${signUP.value}" }
                 }
-            }catch(e : Exception){
-                _signUP.value =  RequestState.Error(e)
+            } catch (e: Exception) {
+                _signUP.value = RequestState.Error(e)
             }
         }
     }
@@ -247,6 +261,7 @@ class PortfolioListViewModel @Inject constructor(
             }
         }
     }
+
     /****************** SORT ****************/
     fun saveSortState(coinSort: CoinSort) {
         viewModelScope.launch(Dispatchers.IO) {

@@ -16,6 +16,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.imtmobileapps.R
 import com.imtmobileapps.components.SignUpCard
+import com.imtmobileapps.model.Person
+import com.imtmobileapps.model.State
 import com.imtmobileapps.ui.theme.topAppBarBackgroundColor
 import com.imtmobileapps.ui.theme.topAppBarContentColor
 import com.imtmobileapps.util.*
@@ -48,19 +50,12 @@ fun SignUpScreen(
 
     val signUp = viewModel.signUP.collectAsState()
 
-    val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = signUp.value, block = {
         when (signUp.value) {
-            is RequestState.Error -> {
-
-            }
-            is RequestState.Loading -> {
-
-            }
-            is RequestState.Success<*> ->{
-                logcat(SIGN_UP_SCREEN_TAG){"SignUp Success go back to LoginScreen"}
+            is RequestState.Success<*> -> {
+                logcat(SIGN_UP_SCREEN_TAG) { "SignUp Success go back to LoginScreen" }
                 navController.navigate(Routes.LOGIN_SCREEN)
             }
             else -> {}
@@ -137,11 +132,9 @@ fun SignUpScreen(
                                             emailText.value = ""
                                             usernameText.value = ""
                                             passwordText.value = ""
-
                                         }
                                     }
                                 }
-
                             },
                             onRegisterClicked = {
                                 logcat(SIGN_UP_SCREEN_TAG) { "onRegister clicked" }
@@ -154,8 +147,8 @@ fun SignUpScreen(
                                         usernameText.value,
                                         passwordText.value)
                                 } else {
-                                   val result =  showSnackbar(scaffoldState, scope)
-                                    if (result == SnackbarResult.ActionPerformed){
+                                    val result = showSnackbar(scaffoldState, scope)
+                                    if (result == SnackbarResult.ActionPerformed) {
                                         logcat(Constants.SIGN_UP_SCREEN_TAG) { "THEY clicked retry." }
                                         // clear text fields
                                         emailText.value = ""
