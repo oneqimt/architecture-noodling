@@ -48,3 +48,22 @@ data class Person(
         return "Person(personId=$personId, firstName=$firstName, lastName=$lastName, email=$email, phone=$phone, address=$address, city=$city, zip=$zip, state=$state, personuuid=$personuuid)"
     }
 }
+
+/*
+{
+    "personId": 4,
+    "firstName": "Geraldine",
+    "lastName": "McKracken",
+    "email": "jack@gmail.com",
+    "phone": "7283718247",
+    "address": "51056 S Brekers Way",
+    "city": "Amherst",
+    "zip": "44053",
+    "state": {
+        "id": 35,
+        "name": "Ohio",
+        "country": "USA",
+        "abbreviation": "OH"
+    }
+}
+ */

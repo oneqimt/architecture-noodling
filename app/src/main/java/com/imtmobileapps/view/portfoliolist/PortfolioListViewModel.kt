@@ -128,21 +128,6 @@ class PortfolioListViewModel @Inject constructor(
 
     }
 
-    fun updatePerson(person: Person) {
-        viewModelScope.launch {
-            try {
-                repository.updatePerson(person).collect {
-                    _person.value = it
-                    logcat(TAG) { "UPDATED person is : ${_person.value}" }
-                }
-            } catch (e: Exception) {
-                _person.value = null
-                logcat(TAG) { "ERROR updating person is : ${_person.value}" }
-
-            }
-        }
-    }
-
     fun registerUser(email: String, username: String, password: String) {
         viewModelScope.launch {
             try {

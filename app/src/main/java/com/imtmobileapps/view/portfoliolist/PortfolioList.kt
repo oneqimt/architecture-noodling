@@ -57,7 +57,6 @@ fun PortfolioList(
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     var doScrollList = false
-    var isSuccessPerson = false
 
     LaunchedEffect(key1 = portfolioCoins.value, block = {
 
@@ -89,9 +88,7 @@ fun PortfolioList(
                             navController.navigate(Routes.LOGIN_SCREEN)
                         }
                     }
-
                 }
-
             }
             else -> {}
         }
@@ -100,7 +97,6 @@ fun PortfolioList(
     Scaffold(
         scaffoldState = scaffoldState,
         backgroundColor = MaterialTheme.colors.background,
-
         topBar = {
             person.value?.let {
                 PortfolioListAppBar(

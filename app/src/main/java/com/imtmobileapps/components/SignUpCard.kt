@@ -194,8 +194,6 @@ fun SignUpCard(
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
-                            // TEMP!!!
-                            onRegisterClicked()
                             // check if all fields are valid
                             if (validateEmail(emailText) && validateUsername(usernameText) && validatePassword(passwordText)){
                                 onRegisterClicked()

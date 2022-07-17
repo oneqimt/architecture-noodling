@@ -28,8 +28,6 @@ fun PortfolioListAppBar(
     onAccountClicked: () -> Unit,
     person: Person,
 ) {
-
-
     DefaultListAppBar(
         onSortClicked = {
             onSaveSortState(it)
@@ -53,11 +51,8 @@ fun PortfolioListAppBar(
             logcat(PORTFOLIO_LIST_APP_BAR_TAG) { "onAccount clicked" }
             onAccountClicked()
         },
-
         person = person
-
     )
-
 }
 
 @Composable
@@ -69,12 +64,16 @@ fun DefaultListAppBar(
     onAccountClicked: () -> Unit,
     person: Person,
 ) {
-    val name = "${person.firstName} ${person.lastName}"
+    val displayName: String = if (person.firstName?.isEmpty() == true || person.lastName?.isEmpty() == true){
+        "${person.email}"
+    }else{
+        "${person.firstName} ${person.lastName}"
+    }
 
     TopAppBar(
         title = {
             Text(
-                text = name,
+                text = displayName,
                 color = MaterialTheme.colors.topAppBarContentColor,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
