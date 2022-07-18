@@ -41,4 +41,11 @@
     <string name="email">Email*</string>
     <string name="register">Register</string>
     <string name="account">Account</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="address">Address</string>
+    <string name="phone">Phone</string>
+    <string name="city">City</string>
+    <string name="state">State</string>
+    <string name="zip">Zip</string>
 </resources>

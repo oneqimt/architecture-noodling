@@ -131,6 +131,7 @@ fun PortfolioList(
                     },
                     onAccountClicked ={
                         logcat(PORTFOLIO_LIST_TAG) { "Account clicked" }
+                        navController.navigate(Routes.ACCOUNT_SCREEN)
                     },
                     person = it
 

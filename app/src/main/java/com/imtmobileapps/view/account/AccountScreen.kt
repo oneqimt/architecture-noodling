@@ -8,14 +8,18 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.imtmobileapps.R
+import com.imtmobileapps.components.AccountCard
 import com.imtmobileapps.ui.theme.topAppBarBackgroundColor
 import com.imtmobileapps.ui.theme.topAppBarContentColor
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AccountScreen(
     viewModel: AccountViewModel,
@@ -26,6 +30,8 @@ fun AccountScreen(
     }
     val scaffoldState =
         rememberScaffoldState()
+
+    val cachedPerson = viewModel.personCached.collectAsState()
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -52,6 +58,10 @@ fun AccountScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
+                cachedPerson.value?.let { person ->
+                    AccountCard(person = person)
+                }
 
             }
         }

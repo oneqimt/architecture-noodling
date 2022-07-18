@@ -13,6 +13,8 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.imtmobileapps.ui.theme.ArchitectureComposeTheme
 import com.imtmobileapps.util.Routes
+import com.imtmobileapps.view.account.AccountScreen
+import com.imtmobileapps.view.account.AccountViewModel
 import com.imtmobileapps.view.holding.HoldingDetailScreen
 import com.imtmobileapps.view.holding.HoldingListScreen
 import com.imtmobileapps.view.holding.HoldingViewModel
@@ -31,6 +33,7 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel: PortfolioListViewModel by viewModels()
     private val holdingViewModel: HoldingViewModel by viewModels()
+    private val accountViewModel: AccountViewModel by viewModels()
 
     // Animation Samples
     //https://github.com/google/accompanist/blob/main/sample/src/main/java/com/google/accompanist/sample/navigation/animation/AnimatedNavHostSample.kt
@@ -147,6 +150,39 @@ class MainActivity : ComponentActivity() {
                                 navController = navController
                             )
                         }
+
+                        // ACCOUNT
+
+                        composable(
+                            Routes.ACCOUNT_SCREEN,
+                            enterTransition = {
+                                when (initialState.destination.route) {
+                                    Routes.PORTFOLIO_LIST ->
+                                        slideIntoContainer(
+                                            AnimatedContentScope.SlideDirection.Left,
+                                            animationSpec = tween(700)
+                                        )
+                                    else -> null
+                                }
+                            },
+                            exitTransition = {
+                                when (targetState.destination.route) {
+                                    Routes.PORTFOLIO_LIST ->
+                                        slideOutOfContainer(
+                                            AnimatedContentScope.SlideDirection.Right,
+                                            animationSpec = tween(700)
+                                        )
+                                    else -> null
+                                }
+                            },
+
+                            ) {
+                            AccountScreen(
+                                viewModel = accountViewModel,
+                                navController = navController
+                            )
+                        }
+
                         // PORTFOLIO DETAIL
                         composable(
                             Routes.PORTFOLIO_DETAIL,

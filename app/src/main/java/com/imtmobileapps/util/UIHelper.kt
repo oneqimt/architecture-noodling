@@ -287,7 +287,7 @@ fun getDummyPerson(): Person {
     return Person(
         personId = 0,
         firstName = "Sam",
-        lastName = "Spade",
+        lastName = "Peabody",
         email = "",
         phone = "",
         address = "",

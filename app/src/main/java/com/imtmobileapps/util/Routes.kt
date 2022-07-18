@@ -10,5 +10,6 @@ object Routes {
     const val LOGIN_SCREEN = "login_screen"
     const val EMPTY_SCREEN = "empty_screen"
     const val SIGN_UP_SCREEN = "sign_up_screen"
+    const val ACCOUNT_SCREEN = "account_screen"
 
 }

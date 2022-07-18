@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import logcat.logcat
 import javax.inject.Inject
@@ -17,26 +18,56 @@ class AccountViewModel @Inject constructor(
     private val repository: CryptoRepository
 ):ViewModel() {
 
-    private var _personAcct: MutableStateFlow<Person?> = MutableStateFlow<Person?>(null)
-    var personAcct: StateFlow<Person?> = _personAcct.asStateFlow()
+    private var _personCached: MutableStateFlow<Person?> = MutableStateFlow(null)
+    var personCached: StateFlow<Person?> = _personCached.asStateFlow()
+
+    private var _personId : MutableStateFlow<Int> = MutableStateFlow(0)
+    var personId : StateFlow<Int> = _personId.asStateFlow()
+
+    init {
+        getCachedPersonId()
+    }
+
+    private fun getCachedPersonId(){
+        logcat(TAG){ "getCachedPersonId()... "}
+        viewModelScope.launch {
+            try {
+                // get the id first
+                repository.getCurrentPersonId().collect{
+                    _personId.value = it
+                    logcat(TAG){"PERSON ID is $it"}
+                    getCachedPerson()
+                }
+            }catch (e: Exception){
+                logcat(TAG) { "ERROR getting person from DB : ${e.localizedMessage}" }
+            }
+        }
+    }
+
+    fun getCachedPerson(){
+        logcat(TAG){"getCachedPerson()"}
+        viewModelScope.launch {
+           _personCached.value =  repository.getPerson(_personId.value)
+            logcat(TAG){"_personCached is ${_personCached.value}"}
+        }
+    }
 
     fun updatePerson(person: Person) {
         viewModelScope.launch {
             try {
                 // update person on server
                 repository.updatePersonRemote(person).collect {
-                    _personAcct.value = it
+                    _personCached.value = it
                     // now, update person in database
                     repository.updatePersonLocal(person)
 
                     val dbPerson = repository.getPerson(it.personId)
 
                    logcat(TAG) { "UPDATED LOCAL person is : $dbPerson" }
-                   logcat(TAG) { "UPDATED REMOTE person is : ${_personAcct.value}" }
+                   logcat(TAG) { "UPDATED REMOTE person is : ${_personCached.value}" }
                 }
             } catch (e: Exception) {
-               _personAcct.value = null
-                logcat(TAG) { "ERROR updating person is : ${_personAcct.value}" }
+                logcat(TAG) { "ERROR updating person is : ${_personCached.value}" }
             }
         }
     }
