@@ -13,13 +13,17 @@ val LightGray = Color(0xFFFCFCFC)
 val MediumGray = Color(0xFF9C9C9C)
 val DarkGray = Color(0xFF141414)
 
+val Colors.spinnerBackgroundColor: Color
+    @Composable
+    get() = if (isLight) MediumGray else MediumGray
+
 val Colors.fabBackgroundColor: Color
     @Composable
     get() = if (isLight) DarkGray else LightGray
 
-val Colors.fabIconBackgroundColor : Color
+val Colors.fabIconBackgroundColor: Color
     @Composable
-    get() = if (isLight) Color.White else DarkGray
+    get() = if (isLight) Color.DarkGray else Color.White
 
 val Colors.topAppBarContentColor: Color
     @Composable

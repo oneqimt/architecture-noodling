@@ -4,8 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -13,27 +14,40 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.imtmobileapps.R
 import com.imtmobileapps.model.State
+import com.imtmobileapps.ui.theme.*
 
 @ExperimentalMaterialApi
 @Composable
 fun SpinnerCompose(
-    states: List<State>,
+    states: List<State>?,
     preselectedState: State?,
     onSelectionChanged: (selection: State) -> Unit,
-    ) {
+) {
     var selected by remember { mutableStateOf(preselectedState) }
     var expanded by remember {
         mutableStateOf(false)
     }
     Box(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
     ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.fillMaxWidth()) {
             selected?.abbreviation?.let { abbr ->
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = abbr,
                     label = { (Text(text = stringResource(id = R.string.state))) },
+                    trailingIcon = {
+                        IconButton(onClick = {
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowDropDown,
+                                contentDescription = "ArrowDropDown",
+                                tint = MaterialTheme.colors.fabIconBackgroundColor
+                            )
+                        }
+                    },
                     onValueChange = {}
                 )
 
@@ -42,7 +56,7 @@ fun SpinnerCompose(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
                 ) {
-                    states.forEach { state ->
+                    states?.forEach { state ->
 
                         DropdownMenuItem(
                             modifier = Modifier.fillMaxWidth(),
@@ -53,14 +67,32 @@ fun SpinnerCompose(
                             },
 
                             ) {
-                            state.abbreviation?.let { abbr ->
+
+                            val stateAbbr = "${state.abbreviation}"
+                            val stateName = "${state.name}"
+                            Row(modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween)
+                            {
                                 Text(
-                                    modifier = Modifier.wrapContentWidth(Alignment.Start),
-                                    text = abbr,
+                                    modifier = Modifier.weight(1f),
+                                    text = stateAbbr,
+                                    style = MaterialTheme.typography.subtitle2
+                                )
+
+                                Text(
+                                    text = stateName,
                                     style = MaterialTheme.typography.subtitle2
                                 )
                             }
                         }
+
+                        Divider(
+                            color = MaterialTheme.colors.cardBorderColor,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .width(1.dp))
                     }
                 }
             }
@@ -92,7 +124,7 @@ fun SpinnerComposable_Preview() {
 
             listOf(entry1, entry2, entry3),
             preselectedState = entry2
-        ) { selected -> /* do something with selected */ }
+        ) { }
     }
 }
 

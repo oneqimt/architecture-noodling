@@ -1,17 +1,13 @@
-@file:OptIn(ExperimentalMaterialApi::class)
-
 package com.imtmobileapps.components
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -20,6 +16,8 @@ import com.imtmobileapps.model.Person
 import com.imtmobileapps.model.State
 import com.imtmobileapps.ui.theme.cardBackgroundColor
 import com.imtmobileapps.ui.theme.cardBorderColor
+import com.imtmobileapps.ui.theme.spinnerBackgroundColor
+import com.imtmobileapps.util.Constants.ACCOUNT_CARD
 import com.imtmobileapps.util.getDummyPerson
 import logcat.logcat
 
@@ -27,8 +25,8 @@ import logcat.logcat
 @Composable
 fun AccountCard(
     person: Person,
-
-    ) {
+    states: List<State>,
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -40,11 +38,6 @@ fun AccountCard(
         shape = RoundedCornerShape(corner = CornerSize(6.dp))
     ) {
         val scaffoldState = rememberScaffoldState()
-
-        val entry1 = State(id = 3, "Arizona", abbreviation = "AZ")
-        val entry2 = State(id = 35, "Ohio", abbreviation = "OH")
-        val entry3 = State(id = 1, "Alabama", abbreviation = "AL")
-        val states = mutableListOf(entry1, entry2, entry3)
 
         Scaffold(scaffoldState = scaffoldState) {
             it.calculateTopPadding()
@@ -149,7 +142,10 @@ fun AccountCard(
                 }// end city
 
                 Spacer(modifier = Modifier.height(20.dp))
-                Row(modifier = Modifier.fillMaxWidth(),
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colors.spinnerBackgroundColor.copy(0.2f)),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     // STATE
@@ -158,7 +154,7 @@ fun AccountCard(
                             states = states,
                             preselectedState = person.state
                         ) {
-                            logcat("AccountCard") { "state changed and it is ${it.name}" }
+                            logcat(ACCOUNT_CARD) { "state changed and it is ${it.name}" }
                         }
                     }
                 }// end state
@@ -178,16 +174,34 @@ fun AccountCard(
                         )
                     }
                 }// end zip
+                Spacer(modifier = Modifier.height(20.dp))
+                Row(modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    // SAVE BUTTON
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        onClick = {
+                            logcat(ACCOUNT_CARD) { "SAVE clicked!" }
+                        }
+                    ) {
+                        Text(text = stringResource(id = R.string.save))
+                    }
+                }//end save button
+
             }
         }
     }
 
 }
 
-@Preview
+@ExperimentalMaterialApi
+@Preview(name = "Preview1", showBackground = true)
 @Composable
 fun AccountCardPreview(
 
 ) {
-    AccountCard(person = getDummyPerson())
+    AccountCard(person = getDummyPerson(), states = emptyList())
 }

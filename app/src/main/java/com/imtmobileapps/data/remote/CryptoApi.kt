@@ -8,6 +8,9 @@ interface CryptoApi {
     @GET("managecoins?action=personcmccoins")
     suspend fun getPersonCoins(@Query("person_id") person_id: Int): List<CryptoValue>
 
+    @GET("person")
+    suspend fun getStates(): List<State>
+
     @GET("totals")
     suspend fun getTotals(@Query("person_id") person_id: Int): TotalValues
 

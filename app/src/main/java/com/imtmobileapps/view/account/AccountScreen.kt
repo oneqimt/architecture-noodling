@@ -19,7 +19,7 @@ import com.imtmobileapps.components.AccountCard
 import com.imtmobileapps.ui.theme.topAppBarBackgroundColor
 import com.imtmobileapps.ui.theme.topAppBarContentColor
 
-@OptIn(ExperimentalMaterialApi::class)
+@ExperimentalMaterialApi
 @Composable
 fun AccountScreen(
     viewModel: AccountViewModel,
@@ -32,6 +32,7 @@ fun AccountScreen(
         rememberScaffoldState()
 
     val cachedPerson = viewModel.personCached.collectAsState()
+    val states = viewModel.states.collectAsState()
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -58,9 +59,11 @@ fun AccountScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 cachedPerson.value?.let { person ->
-                    AccountCard(person = person)
+                    AccountCard(
+                        person = person,
+                        states = states.value
+                    )
                 }
 
             }

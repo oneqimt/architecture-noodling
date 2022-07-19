@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.imtmobileapps.data.CryptoRepository
 import com.imtmobileapps.model.Person
+import com.imtmobileapps.model.State
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import logcat.logcat
 import javax.inject.Inject
@@ -24,18 +24,32 @@ class AccountViewModel @Inject constructor(
     private var _personId : MutableStateFlow<Int> = MutableStateFlow(0)
     var personId : StateFlow<Int> = _personId.asStateFlow()
 
+    private var _states = MutableStateFlow<List<State>>(emptyList())
+    var states : StateFlow<List<State>> = _states.asStateFlow()
+
     init {
         getCachedPersonId()
+        getStates()
+    }
+
+    private fun getStates(){
+        viewModelScope.launch {
+            try {
+                repository.getStates().collect{
+                    _states.value = it
+                }
+            }catch (e: Exception){
+                logcat(TAG){"Error getting states ${e.localizedMessage}"}
+            }
+        }
     }
 
     private fun getCachedPersonId(){
-        logcat(TAG){ "getCachedPersonId()... "}
         viewModelScope.launch {
             try {
                 // get the id first
                 repository.getCurrentPersonId().collect{
                     _personId.value = it
-                    logcat(TAG){"PERSON ID is $it"}
                     getCachedPerson()
                 }
             }catch (e: Exception){
@@ -44,7 +58,7 @@ class AccountViewModel @Inject constructor(
         }
     }
 
-    fun getCachedPerson(){
+    private fun getCachedPerson(){
         logcat(TAG){"getCachedPerson()"}
         viewModelScope.launch {
            _personCached.value =  repository.getPerson(_personId.value)
