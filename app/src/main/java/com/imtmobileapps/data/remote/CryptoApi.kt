@@ -1,6 +1,8 @@
 package com.imtmobileapps.data.remote
 
 import com.imtmobileapps.model.*
+import com.imtmobileapps.util.RequestState
+import kotlinx.coroutines.flow.Flow
 import retrofit2.http.*
 
 interface CryptoApi {

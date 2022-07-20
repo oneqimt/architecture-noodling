@@ -192,9 +192,7 @@ fun PortfolioList(
                             listState.animateScrollToItem(0, 0)
                         }
                     }
-
                 }
-
                 LazyColumn(
                     // don't use lazy list state here
                     modifier = Modifier

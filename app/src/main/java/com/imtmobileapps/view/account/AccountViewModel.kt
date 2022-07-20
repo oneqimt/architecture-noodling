@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.imtmobileapps.data.CryptoRepository
 import com.imtmobileapps.model.Person
 import com.imtmobileapps.model.State
+import com.imtmobileapps.util.RequestState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,8 +19,8 @@ class AccountViewModel @Inject constructor(
     private val repository: CryptoRepository
 ):ViewModel() {
 
-    private var _personCached: MutableStateFlow<Person?> = MutableStateFlow(null)
-    var personCached: StateFlow<Person?> = _personCached.asStateFlow()
+    private var _personCached = MutableStateFlow<RequestState<Person>>(RequestState.Idle)
+    var personCached: StateFlow<RequestState<Person>> = _personCached.asStateFlow()
 
     private var _personId : MutableStateFlow<Int> = MutableStateFlow(0)
     var personId : StateFlow<Int> = _personId.asStateFlow()
@@ -50,6 +51,7 @@ class AccountViewModel @Inject constructor(
                 // get the id first
                 repository.getCurrentPersonId().collect{
                     _personId.value = it
+                    logcat(TAG){"Cached PersonId is $it"}
                     getCachedPerson()
                 }
             }catch (e: Exception){
@@ -59,28 +61,39 @@ class AccountViewModel @Inject constructor(
     }
 
     private fun getCachedPerson(){
-        logcat(TAG){"getCachedPerson()"}
+        _personCached.value = RequestState.Loading
         viewModelScope.launch {
-           _personCached.value =  repository.getPerson(_personId.value)
-            logcat(TAG){"_personCached is ${_personCached.value}"}
+            try{
+                //val person = (cachedPerson.value as RequestState.Success<Person>).data
+                val p = repository.getPerson(personId.value)
+                _personCached.value = RequestState.Success(p)
+                logcat(TAG){"Cached Person from DB is ${_personCached.value}"}
+
+            }catch (e: Exception){
+                _personCached.value = RequestState.Error(e)
+                logcat(TAG){"Error getting cached person ${e.localizedMessage}"}
+            }
+
         }
     }
 
     fun updatePerson(person: Person) {
         viewModelScope.launch {
+            _personCached.value = RequestState.Loading
             try {
                 // update person on server
                 repository.updatePersonRemote(person).collect {
-                    _personCached.value = it
+                   _personCached.value = RequestState.Success(it)
+                    logcat(TAG){"updatePersonRemote and person is $it"}
                     // now, update person in database
-                    repository.updatePersonLocal(person)
+                  // repository.updatePersonLocal(person)
+                 //  val dbPerson = repository.getPerson(person.personId)
 
-                    val dbPerson = repository.getPerson(it.personId)
-
-                   logcat(TAG) { "UPDATED LOCAL person is : $dbPerson" }
-                   logcat(TAG) { "UPDATED REMOTE person is : ${_personCached.value}" }
+                  // logcat(TAG) { "UPDATED LOCAL person is : $dbPerson" }
+                  // logcat(TAG) { "UPDATED REMOTE person is : ${_personCached.value}" }
                 }
             } catch (e: Exception) {
+                _personCached.value = RequestState.Error(e)
                 logcat(TAG) { "ERROR updating person is : ${_personCached.value}" }
             }
         }

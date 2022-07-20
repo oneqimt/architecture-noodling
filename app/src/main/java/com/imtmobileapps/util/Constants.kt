@@ -38,5 +38,6 @@ object Constants {
     const val EDIT_COIN_TAG = "EditCoin"
     const val SIGN_UP_SCREEN_TAG = "SignUpScreen"
     const val SIGN_UP_CARD = "SignUpCard"
+    const val ACCOUNT_SCREEN_TAG = "AccountScreen"
     const val ACCOUNT_CARD = "AccountCard"
 }

@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarResult
-import androidx.lifecycle.viewModelScope
 import androidx.security.crypto.EncryptedFile
 import androidx.security.crypto.MasterKeys
 import com.imtmobileapps.model.*
@@ -12,15 +11,13 @@ import com.imtmobileapps.util.Constants.CRYPTO_SENSITIVE_DATA_FILE
 import com.imtmobileapps.util.Constants.ENABLED
 import com.imtmobileapps.util.Constants.MINIMUM_CHARS
 import com.imtmobileapps.util.Constants.ROLE_USER
-import com.imtmobileapps.view.portfoliolist.PortfolioListViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import logcat.LogPriority
-import logcat.logcat
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.math.BigDecimal
 import java.nio.charset.StandardCharsets
+import java.util.regex.Pattern
 
 
 enum class DataSource {
@@ -191,6 +188,15 @@ fun validateEmail(email : String): Boolean{
     }
    return isValidEmail
 
+}
+
+fun validatePhone(phone : String): Boolean{
+    val patterns =  "^\\s*(?:\\+?(\\d{1,3}))?[-. (]*(\\d{3})[-. )]*(\\d{3})[-. ]*(\\d{4})(?: *x(\\d+))?\\s*$"
+    var isValidPhone = false
+    if (phone.isNotEmpty()){
+        isValidPhone = Pattern.compile(patterns).matcher(phone).matches()
+    }
+    return isValidPhone
 }
 
 fun validateSignUp(email: String, username: String, pass: String):Boolean{

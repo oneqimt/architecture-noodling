@@ -16,14 +16,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.imtmobileapps.R
 import com.imtmobileapps.model.State
-import com.imtmobileapps.ui.theme.*
+import com.imtmobileapps.ui.theme.cardBorderColor
+import com.imtmobileapps.ui.theme.fabIconBackgroundColor
 
 @ExperimentalMaterialApi
 @Composable
 fun SpinnerCompose(
     states: List<State>?,
     preselectedState: State?,
-    onSelectionChanged: (selection: State) -> Unit,
+    onSelectionChanged: (selection: State) -> Unit
 ) {
     var selected by remember { mutableStateOf(preselectedState) }
     var expanded by remember {
@@ -127,8 +128,9 @@ fun SpinnerComposable_Preview() {
         SpinnerCompose(
 
             listOf(entry1, entry2, entry3),
-            preselectedState = entry2
-        ) { }
+            preselectedState = entry2,
+            onSelectionChanged = {}
+        )
     }
 }
 

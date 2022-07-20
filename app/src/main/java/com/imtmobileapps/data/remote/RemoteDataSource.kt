@@ -1,6 +1,7 @@
 package com.imtmobileapps.data.remote
 
 import com.imtmobileapps.model.*
+import com.imtmobileapps.util.RequestState
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

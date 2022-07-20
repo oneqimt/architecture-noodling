@@ -73,6 +73,7 @@ class PortfolioListViewModel @Inject constructor(
                 delay(500L)
                 repository.login(uname, pass).collect { signUp ->
                     signUp.person.let { person ->
+                        logcat(TAG){"LOGIN and person returned is $person"}
                         _person.value = person
                         _personId.value = person.personId
                         // save personId to dataStore
@@ -82,7 +83,7 @@ class PortfolioListViewModel @Inject constructor(
                         // now save the person to the database
                         val result: Long = repository.savePerson(person)
                         person.personuuid = result.toInt()
-                        logcat(TAG) { "_person is : ${_person.value}" }
+                        logcat(TAG) { "_person.value is : ${_person.value}" }
                         _isLoggedIn.update {
                             RequestState.Success(true)
                         }

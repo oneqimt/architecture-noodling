@@ -2,6 +2,8 @@ package com.imtmobileapps.data.local
 
 import androidx.room.*
 import com.imtmobileapps.model.Person
+import com.imtmobileapps.util.RequestState
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PersonDao {

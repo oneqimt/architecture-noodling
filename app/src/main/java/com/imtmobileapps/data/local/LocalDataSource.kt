@@ -4,6 +4,7 @@ import com.imtmobileapps.model.CryptoValue
 import com.imtmobileapps.model.Person
 import com.imtmobileapps.model.TotalValues
 import com.imtmobileapps.util.CoinSort
+import com.imtmobileapps.util.RequestState
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -82,7 +83,7 @@ class LocalDataSource @Inject constructor(
         return personDao.savePerson(person)
     }
 
-    suspend fun getPerson(personId: Int): Person {
+    suspend fun getPerson(personId: Int): Person{
         return personDao.getPerson(personId)
     }
 
