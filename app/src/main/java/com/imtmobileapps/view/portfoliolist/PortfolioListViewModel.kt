@@ -2,6 +2,7 @@ package com.imtmobileapps.view.portfoliolist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.imtmobileapps.data.CryptoRepository
 import com.imtmobileapps.model.CryptoValue
 import com.imtmobileapps.model.Person
@@ -35,7 +36,7 @@ class PortfolioListViewModel @Inject constructor(
     private val _personId: MutableStateFlow<Int> = MutableStateFlow(-1)
     val personId: StateFlow<Int> = _personId.asStateFlow()
 
-    private var _person: MutableStateFlow<Person?> = MutableStateFlow<Person?>(null)
+    private var _person: MutableStateFlow<Person?> = MutableStateFlow(null)
     var person: StateFlow<Person?> = _person.asStateFlow()
 
     private val _selectedCryptoValue: MutableStateFlow<CryptoValue?> = MutableStateFlow(null)

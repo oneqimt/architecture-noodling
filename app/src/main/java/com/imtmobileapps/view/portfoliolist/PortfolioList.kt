@@ -24,11 +24,8 @@ import com.imtmobileapps.components.CircularProgressBar
 import com.imtmobileapps.components.PortfolioListAppBar
 import com.imtmobileapps.model.CryptoValue
 import com.imtmobileapps.ui.theme.staticTextColor
-import com.imtmobileapps.util.CoinSort
+import com.imtmobileapps.util.*
 import com.imtmobileapps.util.Constants.PORTFOLIO_LIST_TAG
-import com.imtmobileapps.util.RequestState
-import com.imtmobileapps.util.Routes
-import com.imtmobileapps.util.deleteSensitiveFile
 import kotlinx.coroutines.launch
 import logcat.logcat
 import retrofit2.HttpException
@@ -86,6 +83,7 @@ fun PortfolioList(
                             }
                             viewModel.logout()
                             navController.navigate(Routes.LOGIN_SCREEN)
+                            resetApp(context)
                         }
                     }
                 }
@@ -112,6 +110,9 @@ fun PortfolioList(
                         }
                         viewModel.logout()
                         navController.navigate(Routes.LOGIN_SCREEN)
+                        resetApp(context)
+
+
                     },
                     onSaveSortState = { coinSort ->
                         doScrollList = true

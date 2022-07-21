@@ -90,6 +90,10 @@ fun AccountScreen(
                 phoneText.value = person.phone.toString()
                 cityText.value = person.city.toString()
                 zipText.value = person.zip.toString()
+                selectedState.value = person.state!!
+
+                //call view model to update person in database
+                // viewModel.updatePersonLocal(person)
             }
             else -> {}
         }
@@ -113,97 +117,99 @@ fun AccountScreen(
                 },
                 backgroundColor = MaterialTheme.colors.topAppBarBackgroundColor
             )
-        },
-        content = {
-            it.calculateTopPadding()
-            when (cachedPerson.value) {
-                RequestState.Loading -> {
-                    Column(
-                        modifier = Modifier.padding(30.dp),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
+        }
+    ) {
+        it.calculateTopPadding()
 
-                    ) {
-                        CircularProgressBar()
-                    }
+        when (cachedPerson.value) {
+            RequestState.Loading -> {
+                Column(
+                    modifier = Modifier.padding(30.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+
+                ) {
+                    CircularProgressBar()
                 }
-                is RequestState.Success -> {
-                    Column(
-                        Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+            }
+            is RequestState.Success -> {
+                Column(
+                    Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    if (personId.value != -1) {
                         val person = (cachedPerson.value as RequestState.Success<Person>).data
-                        var s  = State(id = 0, name = "", abbreviation = "")
-                        if (person.state != null) {
-                            s = person.state
-                        }
-
-                        AccountCard(
-                            firstNameText = firstNameText.value,
-                            lastNameText = lastNameText.value,
-                            emailNameText = emailText.value,
-                            addressNameText = addressText.value,
-                            cityNameText = cityText.value,
-                            phoneNameText = phoneText.value,
-                            selectedState = s,
-                            zipNameText = zipText.value,
-                            person = person,
-                            states = states.value,
-                            onFirstNameChanged = { firstName ->
-                                firstNameText.value = firstName
-                            },
-                            onLastNameChanged = { lastName ->
-                                lastNameText.value = lastName
-                            },
-                            onEmailChange = { email ->
-                                emailText.value = email
-                            },
-                            onAddressChanged = { address ->
-                                addressText.value = address
-                            },
-                            onCityChanged = { city ->
-                                cityText.value = city
-                            },
-                            onStateSelectionChanged = { state2 ->
-                                selectedState.value = state2
-                            },
-                            onPhoneChanged = { phone ->
-                                phoneText.value = phone
-                            },
-                            onSaveClicked = {
-                                val updatedPerson = Person(
-                                    personId = personId.value,
-                                    firstName = firstNameText.value,
-                                    lastName = lastNameText.value,
-                                    email = emailText.value,
-                                    address = addressText.value,
-                                    city = cityText.value,
-                                    state = selectedState.value,
-                                    zip = zipText.value,
-                                    phone = phoneText.value
-                                )
-                                viewModel.updatePerson(updatedPerson)
-                                logcat(ACCOUNT_SCREEN_TAG) { " onSaveClicked and Person to update is $updatedPerson" }
-                            },
-                            onZipChanged = { zip ->
-                                zipText.value = zip
-                            },
-                            onDone = {
-                                // call viewModel
-                                logcat(ACCOUNT_SCREEN_TAG) { " onDoneClicked" }
-                            }
-                        )
-
-                    }// end column
-                }
-
-                is RequestState.Error -> {
+                        logcat(ACCOUNT_SCREEN_TAG) { "PERSON in Column is $person" }
+                        //TODO  com.imtmobileapps.model.Person.getState()' on a null object reference
+                        person.state?.let { pstate ->
+                            AccountCard(
+                                firstNameText = firstNameText.value,
+                                lastNameText = lastNameText.value,
+                                emailNameText = emailText.value,
+                                addressNameText = addressText.value,
+                                cityNameText = cityText.value,
+                                phoneNameText = phoneText.value,
+                                selectedState = pstate,
+                                zipNameText = zipText.value,
+                                person = person,
+                                states = states.value,
+                                onFirstNameChanged = { firstName ->
+                                    firstNameText.value = firstName
+                                },
+                                onLastNameChanged = { lastName ->
+                                    lastNameText.value = lastName
+                                },
+                                onEmailChange = { email ->
+                                    emailText.value = email
+                                },
+                                onAddressChanged = { address ->
+                                    addressText.value = address
+                                },
+                                onCityChanged = { city ->
+                                    cityText.value = city
+                                },
+                                onStateSelectionChanged = { state2 ->
+                                    selectedState.value = state2
+                                },
+                                onPhoneChanged = { phone ->
+                                    phoneText.value = phone
+                                },
+                                onSaveClicked = {
+                                    val updatedPerson = Person(
+                                        personId = personId.value,
+                                        firstName = firstNameText.value,
+                                        lastName = lastNameText.value,
+                                        email = emailText.value,
+                                        address = addressText.value,
+                                        city = cityText.value,
+                                        state = selectedState.value,
+                                        zip = zipText.value,
+                                        phone = phoneText.value
+                                    )
+                                    viewModel.updatePersonRemote(updatedPerson)
+                                    logcat(ACCOUNT_SCREEN_TAG) { " onSaveClicked and Person to update is $updatedPerson" }
+                                },
+                                onZipChanged = { zip ->
+                                    zipText.value = zip
+                                },
+                                onDone = {
+                                    // call viewModel
+                                    logcat(ACCOUNT_SCREEN_TAG) { " onDoneClicked" }
+                                }
+                            )
+                        }// end column
+                    }
 
                 }
-                else -> {}
+
             }
 
+            is RequestState.Error -> {
+
+            }
+            else -> {}
         }
-    )
+
+    }
 }

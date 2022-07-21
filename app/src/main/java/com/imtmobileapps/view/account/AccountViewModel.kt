@@ -52,20 +52,22 @@ class AccountViewModel @Inject constructor(
                 repository.getCurrentPersonId().collect{
                     _personId.value = it
                     logcat(TAG){"Cached PersonId is $it"}
-                    getCachedPerson()
+                    if( it != -1){
+                        getCachedPerson(it)
+                    }
+
                 }
             }catch (e: Exception){
                 logcat(TAG) { "ERROR getting person from DB : ${e.localizedMessage}" }
             }
         }
     }
-
-    private fun getCachedPerson(){
+    // TODO Cached Person from DB is Success(data=null)
+    private fun getCachedPerson(id : Int){
         _personCached.value = RequestState.Loading
         viewModelScope.launch {
             try{
-                //val person = (cachedPerson.value as RequestState.Success<Person>).data
-                val p = repository.getPerson(personId.value)
+                val p = repository.getPerson(id)
                 _personCached.value = RequestState.Success(p)
                 logcat(TAG){"Cached Person from DB is ${_personCached.value}"}
 
@@ -77,7 +79,7 @@ class AccountViewModel @Inject constructor(
         }
     }
 
-    fun updatePerson(person: Person) {
+    fun updatePersonRemote(person: Person) {
         viewModelScope.launch {
             _personCached.value = RequestState.Loading
             try {
@@ -85,18 +87,26 @@ class AccountViewModel @Inject constructor(
                 repository.updatePersonRemote(person).collect {
                    _personCached.value = RequestState.Success(it)
                     logcat(TAG){"updatePersonRemote and person is $it"}
-                    // now, update person in database
-                  // repository.updatePersonLocal(person)
-                 //  val dbPerson = repository.getPerson(person.personId)
-
-                  // logcat(TAG) { "UPDATED LOCAL person is : $dbPerson" }
-                  // logcat(TAG) { "UPDATED REMOTE person is : ${_personCached.value}" }
                 }
             } catch (e: Exception) {
                 _personCached.value = RequestState.Error(e)
-                logcat(TAG) { "ERROR updating person is : ${_personCached.value}" }
+                logcat(TAG) { "ERROR updating person REMOTE is : ${_personCached.value}" }
             }
         }
+    }
+
+    fun updatePersonLocal(person: Person){
+        viewModelScope.launch {
+            try{
+                repository.updatePersonLocal(person)
+
+                val p = getCachedPerson(person.personId)
+                logcat(TAG){"getCachedPerson() after updatePersonLocal is $p"}
+            }catch (e: Exception){
+                logcat(TAG) { "ERROR updating person LOCAL is : ${e.localizedMessage}" }
+            }
+        }
+
     }
 
     companion object{

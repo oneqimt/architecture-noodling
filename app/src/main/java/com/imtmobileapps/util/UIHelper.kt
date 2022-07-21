@@ -1,6 +1,7 @@
 package com.imtmobileapps.util
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarResult
@@ -52,6 +53,15 @@ enum class SheetType {
 enum class SearchAppBarState {
     OPENED,
     CLOSED
+}
+
+fun resetApp(context : Context){
+    val packageManager = context.packageManager
+    val intent = packageManager.getLaunchIntentForPackage(context.packageName)
+    val componentName = intent!!.component
+    val mainIntent = Intent.makeRestartActivityTask(componentName)
+    context.startActivity(mainIntent)
+    Runtime.getRuntime().exit(0)
 }
 
 fun showSnackbar(scaffoldState: ScaffoldState, scope: CoroutineScope): SnackbarResult{
