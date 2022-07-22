@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.imtmobileapps.R
+import com.imtmobileapps.components.CircularProgressBar
 import com.imtmobileapps.components.SignUpCard
 import com.imtmobileapps.ui.theme.topAppBarBackgroundColor
 import com.imtmobileapps.ui.theme.topAppBarContentColor
@@ -89,9 +90,7 @@ fun SignUpScreen(
             ) {
                 when (signUp.value) {
                     is RequestState.Loading -> {
-                        CircularProgressIndicator(
-                            color = MaterialTheme.colors.primary,
-                        )
+                        CircularProgressBar()
                     }
 
                     else -> {
