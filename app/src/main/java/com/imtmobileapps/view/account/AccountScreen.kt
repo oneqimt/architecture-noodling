@@ -92,8 +92,7 @@ fun AccountScreen(
                 zipText.value = person.zip.toString()
                 selectedState.value = person.state!!
 
-                // TODO call view model to update person in database
-                // viewModel.updatePersonLocal(person)
+                viewModel.updatePersonLocal(person)
             }
             is RequestState.Error -> {
                 val message = "There was a problem updating you account. Retry."

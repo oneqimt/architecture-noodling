@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,7 +25,7 @@ import com.imtmobileapps.ui.theme.fabIconBackgroundColor
 fun SpinnerCompose(
     states: List<State>?,
     preselectedState: State?,
-    onSelectionChanged: (selection: State) -> Unit
+    onSelectionChanged: (selection: State) -> Unit,
 ) {
     var selected by remember { mutableStateOf(preselectedState) }
     var expanded by remember {
@@ -48,18 +49,29 @@ fun SpinnerCompose(
                             Icon(
                                 imageVector = Icons.Default.ArrowDropDown,
                                 contentDescription = "ArrowDropDown",
-                                tint = MaterialTheme.colors.fabIconBackgroundColor
+                                tint = MaterialTheme.colors.fabIconBackgroundColor,
+                                modifier = Modifier
+                                    .clickable {
+                                        expanded = !expanded
+                                    }
+                                    .scale(1f, if (expanded) -1f else 1f)
                             )
                         }
                     },
-                    onValueChange = {},
-                    shape = RoundedCornerShape(CornerSize(6.dp), CornerSize(6.dp), CornerSize(1.dp), CornerSize(1.dp))
+                    onValueChange = {
+                        // may not need
+                    },
+                    shape = RoundedCornerShape(CornerSize(6.dp),
+                        CornerSize(6.dp),
+                        CornerSize(1.dp),
+                        CornerSize(1.dp))
                 )
 
                 DropdownMenu(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(.7f),
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
+
                 ) {
                     states?.forEach { state ->
 
@@ -77,7 +89,7 @@ fun SpinnerCompose(
                             val stateName = "${state.name}"
                             Row(modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(10.dp),
+                                .padding(10.dp, 20.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween)
                             {
                                 Text(
@@ -101,7 +113,7 @@ fun SpinnerCompose(
                     }
                 }
             }
-        }
+        }// end column
         Spacer(
             modifier = Modifier
                 .matchParentSize()
@@ -112,7 +124,7 @@ fun SpinnerCompose(
                 )
         )
 
-    }
+    }// end box
 }
 
 @ExperimentalMaterialApi
@@ -121,14 +133,14 @@ fun SpinnerCompose(
 fun SpinnerComposable_Preview() {
     MaterialTheme {
 
-        val entry1 = State(id = 3, "Arizona", abbreviation = "AZ")
-        val entry2 = State(id = 35, "Ohio", abbreviation = "OH")
-        val entry3 = State(id = 1, "Alabama", abbreviation = "AL")
+        val state1 = State(id = 3, "Arizona", abbreviation = "AZ")
+        val state2 = State(id = 35, "Ohio", abbreviation = "OH")
+        val state3 = State(id = 1, "Alabama", abbreviation = "AL")
 
         SpinnerCompose(
 
-            listOf(entry1, entry2, entry3),
-            preselectedState = entry2,
+            listOf(state1, state2, state3),
+            preselectedState = state2,
             onSelectionChanged = {}
         )
     }

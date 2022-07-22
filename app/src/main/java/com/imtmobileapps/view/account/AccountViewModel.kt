@@ -62,7 +62,7 @@ class AccountViewModel @Inject constructor(
             }
         }
     }
-    // TODO Cached Person from DB is Success(data=null)
+
     private fun getCachedPerson(id : Int){
         _personCached.value = RequestState.Loading
         viewModelScope.launch {
