@@ -8,10 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +24,7 @@ import com.imtmobileapps.ui.theme.topAppBarBackgroundColor
 import com.imtmobileapps.ui.theme.topAppBarContentColor
 import com.imtmobileapps.util.Constants.ACCOUNT_SCREEN_TAG
 import com.imtmobileapps.util.RequestState
+import com.imtmobileapps.util.showSnackbar
 import logcat.logcat
 
 @ExperimentalMaterialApi
@@ -40,6 +38,8 @@ fun AccountScreen(
     }
     val scaffoldState =
         rememberScaffoldState()
+
+    val scope = rememberCoroutineScope()
 
     val cachedPerson: androidx.compose.runtime.State<RequestState<Person>> =
         viewModel.personCached.collectAsState()
@@ -92,8 +92,17 @@ fun AccountScreen(
                 zipText.value = person.zip.toString()
                 selectedState.value = person.state!!
 
-                //call view model to update person in database
+                // TODO call view model to update person in database
                 // viewModel.updatePersonLocal(person)
+            }
+            is RequestState.Error -> {
+                val message = "There was a problem updating you account. Retry."
+                val label = "Retry"
+                val result = showSnackbar(scaffoldState, scope, message, label)
+                if (result == SnackbarResult.ActionPerformed) {
+                    logcat(ACCOUNT_SCREEN_TAG){"Do whatever to UI..."}
+                }
+
             }
             else -> {}
         }
@@ -140,8 +149,6 @@ fun AccountScreen(
                 ) {
                     if (personId.value != -1) {
                         val person = (cachedPerson.value as RequestState.Success<Person>).data
-                        logcat(ACCOUNT_SCREEN_TAG) { "PERSON in Column is $person" }
-                        //TODO  com.imtmobileapps.model.Person.getState()' on a null object reference
                         person.state?.let { pstate ->
                             AccountCard(
                                 firstNameText = firstNameText.value,
@@ -194,19 +201,24 @@ fun AccountScreen(
                                     zipText.value = zip
                                 },
                                 onDone = {
-                                    // call viewModel
-                                    logcat(ACCOUNT_SCREEN_TAG) { " onDoneClicked" }
+                                    val updatedPerson = Person(
+                                        personId = personId.value,
+                                        firstName = firstNameText.value,
+                                        lastName = lastNameText.value,
+                                        email = emailText.value,
+                                        address = addressText.value,
+                                        city = cityText.value,
+                                        state = selectedState.value,
+                                        zip = zipText.value,
+                                        phone = phoneText.value
+                                    )
+                                    viewModel.updatePersonRemote(updatedPerson)
+                                    logcat(ACCOUNT_SCREEN_TAG) { " onDoneClicked and Person to update is $updatedPerson" }
                                 }
                             )
                         }// end column
                     }
-
                 }
-
-            }
-
-            is RequestState.Error -> {
-
             }
             else -> {}
         }

@@ -64,13 +64,16 @@ fun resetApp(context : Context){
     Runtime.getRuntime().exit(0)
 }
 
-fun showSnackbar(scaffoldState: ScaffoldState, scope: CoroutineScope): SnackbarResult{
+fun showSnackbar(scaffoldState: ScaffoldState,
+                 scope: CoroutineScope,
+                 message: String,
+                 label: String): SnackbarResult{
     // show snack bar to user
     var result:SnackbarResult = SnackbarResult.Dismissed
     scope.launch {
         result = scaffoldState.snackbarHostState.showSnackbar(
-            message = "Those values and not valid. Please retry.",
-            actionLabel = "Retry",
+            message = message,
+            actionLabel = label,
             SnackbarDuration.Long
         )
     }

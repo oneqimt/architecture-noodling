@@ -11,19 +11,18 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.imtmobileapps.R
 import com.imtmobileapps.components.SignUpCard
-import com.imtmobileapps.model.Person
-import com.imtmobileapps.model.State
 import com.imtmobileapps.ui.theme.topAppBarBackgroundColor
 import com.imtmobileapps.ui.theme.topAppBarContentColor
-import com.imtmobileapps.util.*
 import com.imtmobileapps.util.Constants.SIGN_UP_SCREEN_TAG
+import com.imtmobileapps.util.RequestState
+import com.imtmobileapps.util.Routes
+import com.imtmobileapps.util.showSnackbar
+import com.imtmobileapps.util.validateSignUp
 import com.imtmobileapps.view.portfoliolist.PortfolioListViewModel
-import kotlinx.coroutines.launch
 import logcat.logcat
 
 @Composable
@@ -51,6 +50,8 @@ fun SignUpScreen(
     val signUp = viewModel.signUP.collectAsState()
 
     val scope = rememberCoroutineScope()
+    val message = "Those values and not valid. Please retry."
+    val label = "Retry"
 
     LaunchedEffect(key1 = signUp.value, block = {
         when (signUp.value) {
@@ -117,22 +118,12 @@ fun SignUpScreen(
                                         usernameText.value,
                                         passwordText.value)
                                 } else {
-                                    // REFACTOR into 1 method
-                                    scope.launch {
-                                        // show snack bar to user
-                                        val result = scaffoldState.snackbarHostState.showSnackbar(
-                                            message = "Those values and not valid. Please retry.",
-                                            actionLabel = "Retry",
-                                            SnackbarDuration.Long
-                                        )
-                                        logcat(Constants.SIGN_UP_SCREEN_TAG) { "result is : ${result.name}" }
-                                        if (result == SnackbarResult.ActionPerformed) {
-                                            logcat(Constants.SIGN_UP_SCREEN_TAG) { "THEY clicked retry." }
-                                            // clear text fields
-                                            emailText.value = ""
-                                            usernameText.value = ""
-                                            passwordText.value = ""
-                                        }
+                                    val result = showSnackbar(scaffoldState, scope, message, label)
+                                    if (result == SnackbarResult.ActionPerformed) {
+                                        // clear text fields
+                                        emailText.value = ""
+                                        usernameText.value = ""
+                                        passwordText.value = ""
                                     }
                                 }
                             },
@@ -147,9 +138,9 @@ fun SignUpScreen(
                                         usernameText.value,
                                         passwordText.value)
                                 } else {
-                                    val result = showSnackbar(scaffoldState, scope)
+
+                                    val result = showSnackbar(scaffoldState, scope, message, label)
                                     if (result == SnackbarResult.ActionPerformed) {
-                                        logcat(Constants.SIGN_UP_SCREEN_TAG) { "THEY clicked retry." }
                                         // clear text fields
                                         emailText.value = ""
                                         usernameText.value = ""
