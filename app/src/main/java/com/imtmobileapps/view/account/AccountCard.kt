@@ -1,4 +1,4 @@
-package com.imtmobileapps.components
+package com.imtmobileapps.view.account
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.imtmobileapps.R
+import com.imtmobileapps.components.SpinnerCompose
 import com.imtmobileapps.model.Person
 import com.imtmobileapps.model.State
 import com.imtmobileapps.ui.theme.cardBackgroundColor

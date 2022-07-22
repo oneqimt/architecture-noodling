@@ -1,4 +1,4 @@
-package com.imtmobileapps.components
+package com.imtmobileapps.view.signup
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
