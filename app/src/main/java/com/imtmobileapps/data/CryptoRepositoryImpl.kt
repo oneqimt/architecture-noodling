@@ -86,10 +86,6 @@ class CryptoRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updatePersonLocal(person: Person): Int {
-        return localDataSource.updatePersonLocal(person)
-    }
-
     override fun getStates(): Flow<List<State>> {
        return flow {
            val states = remoteDataSource.getStates()

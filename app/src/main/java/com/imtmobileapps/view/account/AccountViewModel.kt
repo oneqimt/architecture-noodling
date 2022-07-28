@@ -29,6 +29,7 @@ class AccountViewModel @Inject constructor(
     var states : StateFlow<List<State>> = _states.asStateFlow()
 
     init {
+        logcat(TAG){"INIT called"}
         getCachedPersonId()
         getStates()
     }
@@ -75,7 +76,6 @@ class AccountViewModel @Inject constructor(
                 _personCached.value = RequestState.Error(e)
                 logcat(TAG){"Error getting cached person ${e.localizedMessage}"}
             }
-
         }
     }
 
@@ -88,25 +88,16 @@ class AccountViewModel @Inject constructor(
                    _personCached.value = RequestState.Success(it)
                     logcat(TAG){"updatePersonRemote and person is $it"}
                 }
+
+               val personToUpdate : Person = (_personCached.value as RequestState.Success<Person>).data
+                logcat(TAG){"SAVING LOCAL PERSON personToUpdate is $personToUpdate"}
+                repository.savePerson(personToUpdate)
+
             } catch (e: Exception) {
                 _personCached.value = RequestState.Error(e)
                 logcat(TAG) { "ERROR updating person REMOTE is : ${_personCached.value}" }
             }
         }
-    }
-
-    fun updatePersonLocal(person: Person){
-        viewModelScope.launch {
-            try{
-                repository.updatePersonLocal(person)
-
-                val p = getCachedPerson(person.personId)
-                logcat(TAG){"getCachedPerson() after updatePersonLocal is $p"}
-            }catch (e: Exception){
-                logcat(TAG) { "ERROR updating person LOCAL is : ${e.localizedMessage}" }
-            }
-        }
-
     }
 
     companion object{

@@ -10,9 +10,6 @@ interface PersonDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun savePerson(person: Person):Long
 
-    @Update
-    suspend fun updatePerson(person: Person):Int
-
     @Query(value = "SELECT * FROM person WHERE person_id = :personId")
     suspend fun getPerson(personId: Int): Person
 

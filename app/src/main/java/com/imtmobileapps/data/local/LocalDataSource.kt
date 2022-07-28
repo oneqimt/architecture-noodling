@@ -87,8 +87,4 @@ class LocalDataSource @Inject constructor(
         return personDao.getPerson(personId)
     }
 
-    suspend fun updatePersonLocal(person: Person): Int{
-        return personDao.updatePerson(person)
-    }
-
 }

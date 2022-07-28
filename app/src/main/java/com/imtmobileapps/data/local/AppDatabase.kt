@@ -9,7 +9,7 @@ import com.imtmobileapps.model.CryptoValue
 import com.imtmobileapps.model.Person
 import com.imtmobileapps.model.TotalValues
 
-@Database(entities = [CryptoValue::class, Person::class, TotalValues::class], version = 3, exportSchema = false)
+@Database(entities = [CryptoValue::class, Person::class, TotalValues::class], version = 4, exportSchema = false)
 @TypeConverters(BigDecimalTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 

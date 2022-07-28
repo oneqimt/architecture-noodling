@@ -16,7 +16,6 @@ interface CryptoRepository {
     suspend fun getPerson(personId: Int): Person
     suspend fun deletePerson()
     fun updatePersonRemote(person: Person): Flow<Person>
-    suspend fun updatePersonLocal(person: Person): Int
     fun getStates() : Flow<List<State>>
 
     fun resetPassword(email: String): Flow<ReturnDTO>

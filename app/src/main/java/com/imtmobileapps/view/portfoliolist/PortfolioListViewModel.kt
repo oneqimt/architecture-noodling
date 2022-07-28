@@ -60,7 +60,17 @@ class PortfolioListViewModel @Inject constructor(
         _selectedCryptoValue.value = cryptoValue
     }
 
+    init {
+        logcat(TAG){"INIT called"}
+    }
+
     private var loginJob: Job? = null
+
+    fun refreshPerson(){
+        viewModelScope.launch {
+            repository.getPerson(1)
+        }
+    }
 
     fun login(uname: String, pass: String) {
         if (loginJob != null) {

@@ -82,6 +82,7 @@ fun AccountScreen(
         when (cachedPerson.value) {
             is RequestState.Success -> {
                 val person = (cachedPerson.value as RequestState.Success<Person>).data
+                logcat(ACCOUNT_SCREEN_TAG){"in RequestState.Success and person is $person"}
                 firstNameText.value = person.firstName.toString()
                 lastNameText.value = person.lastName.toString()
                 emailText.value = person.email.toString()
@@ -91,7 +92,6 @@ fun AccountScreen(
                 zipText.value = person.zip.toString()
                 selectedState.value = person.state!!
 
-                viewModel.updatePersonLocal(person)
             }
             is RequestState.Error -> {
                 val message = "There was a problem updating you account. Retry."
