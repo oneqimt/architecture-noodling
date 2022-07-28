@@ -16,7 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.imtmobileapps.R
-import com.imtmobileapps.components.AccountCard
 import com.imtmobileapps.components.CircularProgressBar
 import com.imtmobileapps.model.Person
 import com.imtmobileapps.model.State

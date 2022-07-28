@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import com.imtmobileapps.components.AddHoldingDetailCard
 import com.imtmobileapps.model.Coin
 import com.imtmobileapps.model.CryptoValue
 import com.imtmobileapps.ui.theme.topAppBarBackgroundColor

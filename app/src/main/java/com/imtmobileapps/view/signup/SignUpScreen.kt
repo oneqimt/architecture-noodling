@@ -15,7 +15,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.imtmobileapps.R
 import com.imtmobileapps.components.CircularProgressBar
-import com.imtmobileapps.components.SignUpCard
 import com.imtmobileapps.ui.theme.topAppBarBackgroundColor
 import com.imtmobileapps.ui.theme.topAppBarContentColor
 import com.imtmobileapps.util.Constants.SIGN_UP_SCREEN_TAG
