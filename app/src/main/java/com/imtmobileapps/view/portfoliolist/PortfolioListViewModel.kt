@@ -2,12 +2,8 @@ package com.imtmobileapps.view.portfoliolist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.imtmobileapps.data.CryptoRepository
-import com.imtmobileapps.model.CryptoValue
-import com.imtmobileapps.model.Person
-import com.imtmobileapps.model.SignUp
-import com.imtmobileapps.model.TotalValues
+import com.imtmobileapps.model.*
 import com.imtmobileapps.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -36,8 +32,8 @@ class PortfolioListViewModel @Inject constructor(
     private val _personId: MutableStateFlow<Int> = MutableStateFlow(-1)
     val personId: StateFlow<Int> = _personId.asStateFlow()
 
-    private var _person: MutableStateFlow<Person?> = MutableStateFlow(null)
-    var person: StateFlow<Person?> = _person.asStateFlow()
+    private var _personCached = MutableStateFlow<RequestState<Person>>(RequestState.Idle)
+    var personCached: StateFlow<RequestState<Person>> = _personCached.asStateFlow()
 
     private val _selectedCryptoValue: MutableStateFlow<CryptoValue?> = MutableStateFlow(null)
     val selectedCryptoValue: StateFlow<CryptoValue?> = _selectedCryptoValue.asStateFlow()
@@ -60,17 +56,15 @@ class PortfolioListViewModel @Inject constructor(
         _selectedCryptoValue.value = cryptoValue
     }
 
+    private var _states = MutableStateFlow<List<State>>(emptyList())
+    var states : StateFlow<List<State>> = _states.asStateFlow()
+
     init {
         logcat(TAG){"INIT called"}
+        getStates()
     }
 
     private var loginJob: Job? = null
-
-    fun refreshPerson(){
-        viewModelScope.launch {
-            repository.getPerson(1)
-        }
-    }
 
     fun login(uname: String, pass: String) {
         if (loginJob != null) {
@@ -85,7 +79,7 @@ class PortfolioListViewModel @Inject constructor(
                 repository.login(uname, pass).collect { signUp ->
                     signUp.person.let { person ->
                         logcat(TAG){"LOGIN and person returned is $person"}
-                        _person.value = person
+                        _personCached.value = RequestState.Success(person)
                         _personId.value = person.personId
                         // save personId to dataStore
                         repository.savePersonId(person.personId)
@@ -94,7 +88,7 @@ class PortfolioListViewModel @Inject constructor(
                         // now save the person to the database
                         val result: Long = repository.savePerson(person)
                         person.personuuid = result.toInt()
-                        logcat(TAG) { "_person.value is : ${_person.value}" }
+                        logcat(TAG) { "_person.value is : ${_personCached.value}" }
                         _isLoggedIn.update {
                             RequestState.Success(true)
                         }
@@ -123,7 +117,7 @@ class PortfolioListViewModel @Inject constructor(
                 logcat(TAG) { "LOGOUT and loggedOut is : $loggedOut" }
                 // clear all existing values
                 _portfolioCoins.value = RequestState.Success(mutableListOf())
-                _person.value = null
+                _personCached.value = RequestState.Idle
                 _personId.value = -1 // on view model
                 _totalValues.value = RequestState.Success(getDummyTotalsValue())
                 _searchedCoins.value = RequestState.Success(mutableListOf())
@@ -310,6 +304,72 @@ class PortfolioListViewModel @Inject constructor(
             }
         }
     }
+
+    private fun getStates(){
+        viewModelScope.launch {
+            try {
+                repository.getStates().collect{
+                    _states.value = it
+                }
+            }catch (e: Exception){
+                logcat(TAG){"Error getting states ${e.localizedMessage}"}
+            }
+        }
+    }
+
+    private fun getCachedPersonId(){
+        viewModelScope.launch {
+            try {
+                // get the id first
+                repository.getCurrentPersonId().collect{
+                    _personId.value = it
+                    logcat(TAG){"Cached PersonId is $it"}
+                    if( it != -1){
+                        getCachedPerson(it)
+                    }
+
+                }
+            }catch (e: Exception){
+                logcat(TAG) { "ERROR getting person from DB : ${e.localizedMessage}" }
+            }
+        }
+    }
+
+    private fun getCachedPerson(id : Int){
+        _personCached.value = RequestState.Loading
+        viewModelScope.launch {
+            try{
+                val p = repository.getPerson(id)
+                _personCached.value = RequestState.Success(p)
+                logcat(TAG){"Cached Person from DB is ${_personCached.value}"}
+
+            }catch (e: Exception){
+                _personCached.value = RequestState.Error(e)
+                logcat(TAG){"Error getting cached person ${e.localizedMessage}"}
+            }
+        }
+    }
+    fun updatePersonRemote(person: Person) {
+        viewModelScope.launch {
+            _personCached.value = RequestState.Loading
+            try {
+                // update person on server
+                repository.updatePersonRemote(person).collect {
+                    _personCached.value = RequestState.Success(it)
+                    logcat(TAG){"updatePersonRemote and person is $it"}
+                }
+
+                val personToUpdate : Person = (_personCached.value as RequestState.Success<Person>).data
+                logcat(TAG){"SAVING LOCAL PERSON personToUpdate is $personToUpdate"}
+                repository.savePerson(personToUpdate)
+
+            } catch (e: Exception) {
+                _personCached.value = RequestState.Error(e)
+                logcat(TAG) { "ERROR updating person REMOTE is : ${_personCached.value}" }
+            }
+        }
+    }
+
 
     companion object {
         private val TAG = PortfolioListViewModel::class.java.simpleName

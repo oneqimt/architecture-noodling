@@ -24,12 +24,13 @@ import com.imtmobileapps.ui.theme.topAppBarContentColor
 import com.imtmobileapps.util.Constants.ACCOUNT_SCREEN_TAG
 import com.imtmobileapps.util.RequestState
 import com.imtmobileapps.util.showSnackbar
+import com.imtmobileapps.view.portfoliolist.PortfolioListViewModel
 import logcat.logcat
 
 @ExperimentalMaterialApi
 @Composable
 fun AccountScreen(
-    viewModel: AccountViewModel,
+    viewModel: PortfolioListViewModel,
     navController: NavController,
 ) {
     BackHandler {

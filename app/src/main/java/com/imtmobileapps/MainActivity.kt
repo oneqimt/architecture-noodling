@@ -14,7 +14,6 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.imtmobileapps.ui.theme.ArchitectureComposeTheme
 import com.imtmobileapps.util.Routes
 import com.imtmobileapps.view.account.AccountScreen
-import com.imtmobileapps.view.account.AccountViewModel
 import com.imtmobileapps.view.holding.HoldingDetailScreen
 import com.imtmobileapps.view.holding.HoldingListScreen
 import com.imtmobileapps.view.holding.HoldingViewModel
@@ -33,7 +32,7 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel: PortfolioListViewModel by viewModels()
     private val holdingViewModel: HoldingViewModel by viewModels()
-    private val accountViewModel: AccountViewModel by viewModels()
+   // private val accountViewModel: AccountViewModel by viewModels()
 
     // Animation Samples
     //https://github.com/google/accompanist/blob/main/sample/src/main/java/com/google/accompanist/sample/navigation/animation/AnimatedNavHostSample.kt
@@ -178,7 +177,7 @@ class MainActivity : ComponentActivity() {
 
                             ) {
                             AccountScreen(
-                                viewModel = accountViewModel,
+                                viewModel = viewModel,
                                 navController = navController
                             )
                         }
