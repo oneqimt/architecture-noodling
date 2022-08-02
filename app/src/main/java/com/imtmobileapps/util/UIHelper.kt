@@ -376,36 +376,5 @@ fun getDummyGeckoCoin(): GeckoCoin {
 
 }
 
-// UNUSED methods on PortfolioListViewModel as of now
-/*fun searchDatabase(searchQuery: String) {
-    _searchedCoins.value = RequestState.Loading
-    viewModelScope.launch {
-        try {
-            repository.searchDatabase(searchQuery = "%$searchQuery%")
-                .collect {
-                    _searchedCoins.value = RequestState.Success(it)
-                    val coin =
-                        (searchedCoins.value as RequestState.Success<List<CryptoValue>>).data
-                    println("${PortfolioListViewModel.TAG} in searchDatabase and coins are : $coin")
-                }
 
-        } catch (e: Exception) {
-            _searchedCoins.value = RequestState.Error(e)
-            logcat(PortfolioListViewModel.TAG, LogPriority.ERROR) { e.localizedMessage as String }
-        }
-    }
-}*/
-
-/*private fun fetchTotalValuesFromDatabase() {
-    _totalValues.value = RequestState.Loading
-    viewModelScope.launch {
-        try {
-            repository.getTotalValues(1).collect {
-                _totalValues.value = RequestState.Success(it).data
-            }
-        } catch (e: Exception) {
-            logcat(PortfolioListViewModel.TAG, LogPriority.ERROR) { e.localizedMessage as String }
-        }
-    }
-}*/
 

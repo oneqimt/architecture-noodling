@@ -32,7 +32,6 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel: PortfolioListViewModel by viewModels()
     private val holdingViewModel: HoldingViewModel by viewModels()
-   // private val accountViewModel: AccountViewModel by viewModels()
 
     // Animation Samples
     //https://github.com/google/accompanist/blob/main/sample/src/main/java/com/google/accompanist/sample/navigation/animation/AnimatedNavHostSample.kt

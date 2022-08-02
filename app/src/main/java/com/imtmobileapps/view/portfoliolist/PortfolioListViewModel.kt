@@ -317,24 +317,6 @@ class PortfolioListViewModel @Inject constructor(
         }
     }
 
-    private fun getCachedPersonId(){
-        viewModelScope.launch {
-            try {
-                // get the id first
-                repository.getCurrentPersonId().collect{
-                    _personId.value = it
-                    logcat(TAG){"Cached PersonId is $it"}
-                    if( it != -1){
-                        getCachedPerson(it)
-                    }
-
-                }
-            }catch (e: Exception){
-                logcat(TAG) { "ERROR getting person from DB : ${e.localizedMessage}" }
-            }
-        }
-    }
-
     private fun getCachedPerson(id : Int){
         _personCached.value = RequestState.Loading
         viewModelScope.launch {
