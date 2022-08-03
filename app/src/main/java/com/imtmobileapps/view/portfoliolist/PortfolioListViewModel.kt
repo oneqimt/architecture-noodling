@@ -317,20 +317,6 @@ class PortfolioListViewModel @Inject constructor(
         }
     }
 
-    private fun getCachedPerson(id : Int){
-        _personCached.value = RequestState.Loading
-        viewModelScope.launch {
-            try{
-                val p = repository.getPerson(id)
-                _personCached.value = RequestState.Success(p)
-                logcat(TAG){"Cached Person from DB is ${_personCached.value}"}
-
-            }catch (e: Exception){
-                _personCached.value = RequestState.Error(e)
-                logcat(TAG){"Error getting cached person ${e.localizedMessage}"}
-            }
-        }
-    }
     fun updatePersonRemote(person: Person) {
         viewModelScope.launch {
             _personCached.value = RequestState.Loading
@@ -351,8 +337,6 @@ class PortfolioListViewModel @Inject constructor(
             }
         }
     }
-
-
     companion object {
         private val TAG = PortfolioListViewModel::class.java.simpleName
     }

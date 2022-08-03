@@ -9,6 +9,21 @@ AndroidLogcatLogger.installOnDebuggableApp(this, minPriority = VERBOSE)
 
 // UNUSED methods PortfolioListViewModel
 
+private fun getCachedPerson(id : Int){
+_personCached.value = RequestState.Loading
+viewModelScope.launch {
+try{
+val p = repository.getPerson(id)
+_personCached.value = RequestState.Success(p)
+logcat(TAG){"Cached Person from DB is ${_personCached.value}"}
+
+            }catch (e: Exception){
+                _personCached.value = RequestState.Error(e)
+                logcat(TAG){"Error getting cached person ${e.localizedMessage}"}
+            }
+        }
+    }
+
 fun searchDatabase(searchQuery: String) {
 _searchedCoins.value = RequestState.Loading
 viewModelScope.launch {
