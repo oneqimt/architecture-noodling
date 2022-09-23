@@ -8,10 +8,8 @@ import com.imtmobileapps.util.Constants.CMC_LOGO_URL
 import com.imtmobileapps.util.DataSource
 import com.imtmobileapps.util.RequestState
 import dagger.hilt.android.scopes.ViewModelScoped
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 @ViewModelScoped
@@ -20,6 +18,8 @@ class CryptoRepositoryImpl @Inject constructor(
     private val localDataSource: LocalDataSource,
 
     ) : CryptoRepository {
+
+    val personId : Flow<Int> = localDataSource.getPersonId()
 
     override fun resetPassword(email: String): Flow<ReturnDTO> {
         return flow {
