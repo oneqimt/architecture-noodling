@@ -71,6 +71,8 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.5.1'
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation "com.google.accompanist:accompanist-navigation-animation:0.24.10-beta"
+    // collectAsStateWithLifecycle
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.0-alpha01"
 
     // Security Library
     implementation "androidx.security:security-crypto:1.0.0"

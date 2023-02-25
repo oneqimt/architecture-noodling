@@ -18,6 +18,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.imtmobileapps.R
 import com.imtmobileapps.components.CircularProgressBar
@@ -32,6 +34,7 @@ import logcat.logcat
 import retrofit2.HttpException
 
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
@@ -45,12 +48,12 @@ fun PortfolioList(
     }
 
     val portfolioCoins: State<RequestState<List<CryptoValue>>> =
-        viewModel.portfolioCoins.collectAsState()
+        viewModel.portfolioCoins.collectAsStateWithLifecycle()
 
-    val sortState: State<RequestState<CoinSort>> = viewModel.sortState.collectAsState()
+    val sortState: State<RequestState<CoinSort>> = viewModel.sortState.collectAsStateWithLifecycle()
 
-    val cachedPerson: androidx.compose.runtime.State<RequestState<Person>> =
-        viewModel.personCached.collectAsState()
+    val cachedPerson: State<RequestState<Person>> =
+        viewModel.personCached.collectAsStateWithLifecycle()
     val scaffoldState = rememberScaffoldState()
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
