@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.material.ExperimentalMaterialApi
@@ -54,7 +55,7 @@ class MainActivity : ComponentActivity() {
                                 when (initialState.destination.route) {
                                     Routes.PORTFOLIO_LIST ->
                                         slideIntoContainer(
-                                            AnimatedContentScope.SlideDirection.Left,
+                                            AnimatedContentTransitionScope.SlideDirection.Left,
                                             animationSpec = tween(700)
                                         )
 
@@ -65,7 +66,7 @@ class MainActivity : ComponentActivity() {
                                 when (targetState.destination.route) {
                                     Routes.PORTFOLIO_LIST ->
                                         slideOutOfContainer(
-                                            AnimatedContentScope.SlideDirection.Left,
+                                            AnimatedContentTransitionScope.SlideDirection.Left,
                                             animationSpec = tween(700)
                                         )
                                     else -> null
@@ -85,7 +86,7 @@ class MainActivity : ComponentActivity() {
                                 when (initialState.destination.route) {
                                     Routes.LOGIN_SCREEN ->
                                         slideIntoContainer(
-                                            AnimatedContentScope.SlideDirection.Left,
+                                            AnimatedContentTransitionScope.SlideDirection.Left,
                                             animationSpec = tween(700)
                                         )
                                     else -> null
@@ -95,7 +96,7 @@ class MainActivity : ComponentActivity() {
                                 when (targetState.destination.route) {
                                     Routes.LOGIN_SCREEN ->
                                         slideOutOfContainer(
-                                            AnimatedContentScope.SlideDirection.Right,
+                                            AnimatedContentTransitionScope.SlideDirection.Right,
                                             animationSpec = tween(700)
                                         )
                                     else -> null
@@ -115,12 +116,12 @@ class MainActivity : ComponentActivity() {
                                 when (initialState.destination.route) {
                                     Routes.PORTFOLIO_LIST ->
                                         slideIntoContainer(
-                                            AnimatedContentScope.SlideDirection.Left,
+                                            AnimatedContentTransitionScope.SlideDirection.Left,
                                             animationSpec = tween(700)
                                         )
                                     Routes.PORTFOLIO_DETAIL ->
                                         slideIntoContainer(
-                                            AnimatedContentScope.SlideDirection.Right,
+                                            AnimatedContentTransitionScope.SlideDirection.Right,
                                             animationSpec = tween(durationMillis = 700)
                                         )
                                     else -> null
@@ -130,12 +131,12 @@ class MainActivity : ComponentActivity() {
                                 when (targetState.destination.route) {
                                     Routes.LOGIN_SCREEN ->
                                         slideOutOfContainer(
-                                            AnimatedContentScope.SlideDirection.Right,
+                                            AnimatedContentTransitionScope.SlideDirection.Right,
                                             animationSpec = tween(700)
                                         )
                                     Routes.PORTFOLIO_DETAIL ->
                                         slideOutOfContainer(
-                                            AnimatedContentScope.SlideDirection.Left,
+                                            AnimatedContentTransitionScope.SlideDirection.Left,
                                             animationSpec = tween(durationMillis = 700)
                                         )
                                     else -> null
@@ -157,7 +158,7 @@ class MainActivity : ComponentActivity() {
                                 when (initialState.destination.route) {
                                     Routes.PORTFOLIO_LIST ->
                                         slideIntoContainer(
-                                            AnimatedContentScope.SlideDirection.Left,
+                                            AnimatedContentTransitionScope.SlideDirection.Left,
                                             animationSpec = tween(700)
                                         )
                                     else -> null
@@ -167,7 +168,7 @@ class MainActivity : ComponentActivity() {
                                 when (targetState.destination.route) {
                                     Routes.PORTFOLIO_LIST ->
                                         slideOutOfContainer(
-                                            AnimatedContentScope.SlideDirection.Right,
+                                            AnimatedContentTransitionScope.SlideDirection.Right,
                                             animationSpec = tween(700)
                                         )
                                     else -> null
@@ -188,7 +189,7 @@ class MainActivity : ComponentActivity() {
                                 when (initialState.destination.route) {
                                     Routes.PORTFOLIO_LIST ->
                                         slideIntoContainer(
-                                            AnimatedContentScope.SlideDirection.Left,
+                                            AnimatedContentTransitionScope.SlideDirection.Left,
                                             animationSpec = tween(700)
                                         )
                                     else -> null
@@ -198,7 +199,7 @@ class MainActivity : ComponentActivity() {
                                 when (targetState.destination.route) {
                                     Routes.PORTFOLIO_LIST ->
                                         slideOutOfContainer(
-                                            AnimatedContentScope.SlideDirection.Right,
+                                            AnimatedContentTransitionScope.SlideDirection.Right,
                                             animationSpec = tween(700)
                                         )
                                     else -> null
@@ -219,7 +220,7 @@ class MainActivity : ComponentActivity() {
                                 when (initialState.destination.route) {
                                     Routes.PORTFOLIO_LIST ->
                                         slideIntoContainer(
-                                            AnimatedContentScope.SlideDirection.Left,
+                                            AnimatedContentTransitionScope.SlideDirection.Left,
                                             animationSpec = tween(700)
                                         )
                                     else -> null
@@ -229,7 +230,7 @@ class MainActivity : ComponentActivity() {
                                 when (targetState.destination.route) {
                                     Routes.PORTFOLIO_LIST ->
                                         slideOutOfContainer(
-                                            AnimatedContentScope.SlideDirection.Right,
+                                            AnimatedContentTransitionScope.SlideDirection.Right,
                                             animationSpec = tween(700)
                                         )
                                     else -> null
@@ -251,7 +252,7 @@ class MainActivity : ComponentActivity() {
                                 when (initialState.destination.route) {
                                     Routes.HOLDING_LIST ->
                                         slideIntoContainer(
-                                            AnimatedContentScope.SlideDirection.Left,
+                                            AnimatedContentTransitionScope.SlideDirection.Left,
                                             animationSpec = tween(700)
                                         )
                                     else -> null
@@ -261,7 +262,7 @@ class MainActivity : ComponentActivity() {
                                 when (targetState.destination.route) {
                                     Routes.HOLDING_LIST ->
                                         slideOutOfContainer(
-                                            AnimatedContentScope.SlideDirection.Right,
+                                            AnimatedContentTransitionScope.SlideDirection.Right,
                                             animationSpec = tween(700)
                                         )
                                     else -> null

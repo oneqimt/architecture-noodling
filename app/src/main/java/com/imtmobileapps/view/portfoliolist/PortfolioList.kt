@@ -9,8 +9,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarResult
+import androidx.compose.material.Text
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -18,7 +26,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.imtmobileapps.R
@@ -27,14 +34,18 @@ import com.imtmobileapps.components.PortfolioListAppBar
 import com.imtmobileapps.model.CryptoValue
 import com.imtmobileapps.model.Person
 import com.imtmobileapps.ui.theme.staticTextColor
-import com.imtmobileapps.util.*
+import com.imtmobileapps.util.CoinSort
 import com.imtmobileapps.util.Constants.PORTFOLIO_LIST_TAG
+import com.imtmobileapps.util.RequestState
+import com.imtmobileapps.util.Routes
+import com.imtmobileapps.util.deleteSensitiveFile
+import com.imtmobileapps.util.resetApp
+import com.imtmobileapps.util.showSnackbar
 import kotlinx.coroutines.launch
 import logcat.logcat
 import retrofit2.HttpException
 
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
