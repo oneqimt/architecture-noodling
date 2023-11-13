@@ -207,7 +207,7 @@ class PortfolioListViewModel @Inject constructor(
 
             }
         }
-    }
+    }// end
 
     //DATABASE
     private fun clearDatabase() {

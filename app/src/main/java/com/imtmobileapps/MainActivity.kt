@@ -34,10 +34,6 @@ class MainActivity : ComponentActivity() {
     private val viewModel: PortfolioListViewModel by viewModels()
     private val holdingViewModel: HoldingViewModel by viewModels()
 
-    // Animation Samples
-    //https://github.com/google/accompanist/blob/main/sample/src/main/java/com/google/accompanist/sample/navigation/animation/AnimatedNavHostSample.kt
-    // https://google.github.io/accompanist/navigation-animation/
-    //https://medium.com/androiddevelopers/animations-in-navigation-compose-36d48870776b
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
